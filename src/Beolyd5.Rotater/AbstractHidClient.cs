@@ -14,7 +14,8 @@ public abstract class AbstractHidClient: IHidClient {
     private DeviceList?              _deviceList;
     private CancellationTokenSource? _cancellationTokenSource;
     private bool                     _isConnected;
-    private int                      _maxInputReportLength;
+    
+    protected int                    MaxInputReportLength { get; private set; }
 
     /// <summary>
     /// <para><c>HidSharp</c> stream that can be used to read or write bytes from the device, or set features.</para>
@@ -86,7 +87,7 @@ public abstract class AbstractHidClient: IHidClient {
                 HidDevice? newDevice = _deviceList?.GetHidDeviceOrNull(VendorId, ProductId);
                 if (newDevice != null) {
                     DeviceStream          = newDevice.Open();
-                    _maxInputReportLength = newDevice.GetMaxInputReportLength();
+                    MaxInputReportLength = newDevice.GetMaxInputReportLength();
                     isNewStream           = true;
                 }
             }
@@ -114,7 +115,7 @@ public abstract class AbstractHidClient: IHidClient {
         CancellationToken cancellationToken = _cancellationTokenSource!.Token;
 
         try {
-            byte[] readBuffer = new byte[_maxInputReportLength > 0 ? _maxInputReportLength : 128];
+            byte[] readBuffer = new byte[MaxInputReportLength > 0 ? MaxInputReportLength : 128];
             while (!cancellationToken.IsCancellationRequested) {
                 int readBytes = await DeviceStream!.ReadAsync(readBuffer, 0, readBuffer.Length, cancellationToken).ConfigureAwait(false);
                 if (readBytes != 0) {

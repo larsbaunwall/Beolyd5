@@ -4,8 +4,8 @@ using Beolyd5.Rotater;
 
 HidSharp.Utility.HidSharpDiagnostics.EnableTracing = true;
 
-Console.WriteLine("Connecting again ...");
+Console.WriteLine("Connecting ...");
 var device = new BS5DeviceController();
-
+device.
 
 Console.ReadKey();
