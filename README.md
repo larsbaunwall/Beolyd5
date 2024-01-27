@@ -25,8 +25,6 @@ This project aims to bring new life into this device, with modern hardware and a
 
 This will eventually become an alternative product experience for the Beosound 5 controller.
 
-Code for the Rotary controller (which is a USB HID device) can be found in `src/dotnet` and `src/rust`.
-
 And the project name? Well, "sound" is "lyd" in danish ;-)
 
 ## Plans
@@ -34,6 +32,8 @@ And the project name? Well, "sound" is "lyd" in danish ;-)
 ### The hardware
 
 Currently, I am exploring how the rotary dial works over USB, trying to reverse engineer the protocol.
+
+Code for the Rotary controller (which is a USB HID device) can be found in `src/dotnet` and `src/rust`.
 
 This work is greatly inspired and informed by [@toresby](https://github.com/toresbe)'s work on [neomaster](https://github.com/toresbe/neomaster).
 
