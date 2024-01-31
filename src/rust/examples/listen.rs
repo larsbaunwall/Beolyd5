@@ -5,15 +5,19 @@ use beolyd5_controller::{Beolyd5Controller, SystemEvent};
 
 
 fn main() {
-    let mut controller = Beolyd5Controller::new();
+    let controller = Arc::new(Mutex::new(Beolyd5Controller::new()));
+    let controller_clone = Arc::clone(&controller);
 
     // Register a callback to handle device events
-    controller.register_device_event_callback(Arc::new(Mutex::new(|event: SystemEvent| {
+    controller.lock().unwrap().register_device_event_callback(Arc::new(Mutex::new(move |event: SystemEvent| {
         println!("Received event: {:?}", event);
+
+        // Emit click sound
+        //controller_clone.lock().unwrap().click().unwrap();
     })));
 
     // Open the device
-    match controller.open() {
+    match controller.lock().unwrap().open() {
         Ok(_) => println!("Device opened successfully"),
         Err(err) => eprintln!("Failed to open device: {:?}", err),
     }

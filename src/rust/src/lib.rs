@@ -81,6 +81,37 @@ impl Beolyd5Controller {
         Ok(())
     }
 
+    pub fn click(&self) -> Result<(), Box<dyn Error>> {
+        self.send([0x00, 0x31])
+    }
+
+    // From: https://github.com/toresbe/neomaster/blob/master/ui/panel.cpp
+    /*
+    *   0x80:   LED solid
+    *   0x40:   LCD backlight
+    *   0x20:   ?
+    *   0x10:   LED blink
+    *   0x0x:   Any bits here will trigger a click
+    *           seems to make no difference which or how many
+    *
+    *  Byte 2:
+    *   0x80:   Is set when IR receiver is on
+    *   0x40:   Is sometimes set when IR receiver is on?
+    *
+    */
+    //SETTING_CLICK = 0x01
+    //uint8_t bar [2] = { 0x00, 0x00 }; // turns off
+    //uint8_t bar [2] = { 0x40, 0x00 }; // turns on backlight
+    //uint8_t bar [2] = { 0xc0, 0x00 }; // turns on LED
+    //uint8_t bar [2] = { 0x80, 0x00 }; // turns off screen, on LED
+    //uint8_t bar [2] = { 0xd0, 0x00 }; //  blinking
+    fn send(&self, data: [u8; 2]) -> Result<(), Box<dyn Error>> {
+        let device_clone = self.device.clone().unwrap();
+        let device_lock = device_clone.lock().unwrap();
+        device_lock.write(&data[..])?;
+        Ok(())
+    }
+
     pub fn close(&self) {
         self.is_running.store(false, Ordering::Relaxed);
     }
