@@ -1,6 +1,7 @@
 [package]
 name = "beolyd5_controller"
-description = "Software that understands the Bang & Olufsen BeoSound 5 controller"
+description = "USB HID library that understands the Bang & Olufsen BeoSound 5 controller"
+license = "Apache-2.0"
 authors = ["Lars Baunwall"]
 documentation = "https://github.com/larsbaunwall/beolyd5"
 repository = "https://github.com/larsbaunwall/beolyd5"
