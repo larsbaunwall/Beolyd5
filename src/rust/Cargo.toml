@@ -1,10 +1,11 @@
 [package]
 name = "beolyd5_controller"
-description = "Software that understands the Bang & Olufsen BeoSound 5 controller"
+description = "USB HID library that understands the Bang & Olufsen BeoSound 5 controller"
+license = "Apache-2.0"
 authors = ["Lars Baunwall"]
 documentation = "https://github.com/larsbaunwall/beolyd5"
 repository = "https://github.com/larsbaunwall/beolyd5"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
