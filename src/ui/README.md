@@ -12,7 +12,7 @@ You can see an early snapshot of the UI so far here:
 
 Running it locally is easy:
 
-Clone this repo and run `npm tauri dev` in the bs5-contoller directory.
+Clone this repo and run `npm tauri dev` in this directory.
 
 
 ## Hardware

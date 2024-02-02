@@ -27,6 +27,11 @@ This will eventually become an alternative product experience for the Beosound 5
 
 And the project name? Well, "sound" is "lyd" in danish ;-)
 
+This is a very early version of the [new UI](src/ui):
+
+![UI demo](src/ui/docs/demo-v1.gif)
+
+
 ## Plans
 
 ### The hardware
