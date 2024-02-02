@@ -12,7 +12,11 @@ You can see an early snapshot of the UI so far here:
 
 Running it locally is easy:
 
-Clone this repo and run `npm tauri dev` in this directory.
+Clone this repo and run `npm install` & `npm run tauri dev` in this directory.
+
+This will spawn a new application process with the web project embedded.
+
+The website is also available from any browser on `http://localhost:1421`
 
 
 ## Hardware

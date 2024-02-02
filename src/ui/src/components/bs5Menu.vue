@@ -11,9 +11,18 @@
       <stop offset="100%" stop-color="black" />
     </linearGradient>
     <radialGradient id="lineGradient"> 
-      <stop offset="0%" stop-color="rgba(255,255,255,0.3)" />
+      <stop offset="0%" stop-color="rgba(120,120,255,0.25)" />
       <stop offset="90%" stop-color="rgba(0,0,0,0)" />
     </radialGradient>
+      <!-- Define a filter to increase exposure -->
+      <!-- Define a filter to increase exposure -->
+      <filter id="exposureFilter" x="0" y="0" width="100%" height="100%">
+        <feComponentTransfer>
+          <feFuncR type="linear" slope="2" />
+          <feFuncG type="linear" slope="2" />
+          <feFuncB type="linear" slope="2" />
+        </feComponentTransfer>
+      </filter>
   </defs>
     <!-- Arc path for reference -->
     <path
@@ -28,6 +37,7 @@
       :rx="50"
       :ry="350"
       fill="url(#lineGradient)"
+      filter="url(#exposureFilter)"
       :transform="`rotate(${lineAngle - 90}, ${getArcPoint(cx, cy, radius, 0,  lineAngle).x}, ${getArcPoint(cx, cy, radius, 0,  lineAngle).y})`"
     />
     <!-- Menu items positioned along the arc -->
