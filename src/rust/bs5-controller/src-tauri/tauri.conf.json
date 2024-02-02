@@ -35,10 +35,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
+        "resizable": false,
         "title": "bs5-controller",
-        "width": 800,
-        "height": 600
+        "width": 1024,
+        "height": 768
       }
     ]
   }

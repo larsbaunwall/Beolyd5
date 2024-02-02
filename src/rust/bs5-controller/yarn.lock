@@ -263,6 +263,11 @@
     "@tauri-apps/cli-win32-ia32-msvc" "1.5.9"
     "@tauri-apps/cli-win32-x64-msvc" "1.5.9"
 
+"@typehaus/metropolis@^12.0.0-next.7":
+  version "12.0.0-next.7"
+  resolved "https://registry.yarnpkg.com/@typehaus/metropolis/-/metropolis-12.0.0-next.7.tgz#b76b5c0090fe957006b671732af8ed7a05a027fa"
+  integrity sha512-YpJwXiyKQy0j+3LZ1SM2VaO/W3V4aGlzTCkLOBu3dpdXtOMEYVmzMvhK1hsMyernjYp7xq9QnCbd+K+E/kMfgw==
+
 "@types/estree@1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.5.tgz#a6ce3e556e00fd9895dd872dd172ad0d4bd687f4"
