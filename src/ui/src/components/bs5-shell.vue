@@ -1,6 +1,7 @@
 <template>  
+<input type="number" v-model="uiStore.wheelPointerAngle" />
   <div style="z-index: 200; position: fixed; top: 50%; right: 10px; opacity: 0.2; transform: translateY(-50%) rotate(270deg); ">
-    <input type="range" min="155" max="207" step="0.001" v-model="lineAngle" />
+    <input type="range" min="155" max="207" step="0.001" v-model="uiStore.wheelPointerAngle" />
   </div>
   <div style="position: absolute; top: 20px; left: 180px; z-index: 1; width: 820px; height: 700px;">
     <router-view v-slot="{ Component }">
@@ -37,21 +38,21 @@
     <!-- Arc path for reference -->
 
     <ellipse
-      :cx="getArcPoint(cx, cy, radius, 0, lineAngle).x"
-      :cy="getArcPoint(cx, cy, radius, 0,  lineAngle).y"
+      :cx="getArcPoint(cx, cy, radius, 0, uiStore.wheelPointerAngle).x"
+      :cy="getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y"
       :rx="35"
       :ry="25"
       fill="url(#dotGradient)"
-      :transform="`rotate(${lineAngle - 90}, ${getArcPoint(cx, cy, radius, 0,  lineAngle).x}, ${getArcPoint(cx, cy, radius, 0,  lineAngle).y})`"
+      :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
     <ellipse
-      :cx="getArcPoint(cx, cy, radius, 0, lineAngle).x"
-      :cy="getArcPoint(cx, cy, radius, 0,  lineAngle).y"
+      :cx="getArcPoint(cx, cy, radius, 0, uiStore.wheelPointerAngle).x"
+      :cy="getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y"
       :rx="40"
       :ry="400"
       fill="url(#lineGradient)"
       filter="url(#exposureFilter)"
-      :transform="`rotate(${lineAngle - 90}, ${getArcPoint(cx, cy, radius, 0,  lineAngle).x}, ${getArcPoint(cx, cy, radius, 0,  lineAngle).y})`"
+      :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
     <path
       :d="describeArc(cx, cy, radius, startArcAngle, endArcAngle)"
@@ -77,36 +78,18 @@
   </svg>
 </template>
 
-<style scoped>
-.menu-item {
-  transition: transform 0.3s ease;
-}
-
-.slide-up-enter-active,
-.slide-up-leave-active {
-  transition: all 0.25s ease-out;
-}
-
-.slide-up-enter-from {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.slide-up-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-</style>
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router'
+import { useUIStore } from '../stores/ui';
 
 export default defineComponent({
   name: 'BS5Shell',
   setup() {
     const router = useRouter();
-    return { router };
+    const uiStore = useUIStore();
+
+    return { router, uiStore };
   },
   data() {
     return {
@@ -117,7 +100,6 @@ export default defineComponent({
       startArcAngle: 162, // Starting angle for the first menu item
       endArcAngle: 199, // Ending angle for the last menu item
       startItemAngle: 172, // Angle for the first menu item
-      lineAngle: 180, // Angle for the line pointing to the selected menu item
     };
   },
   computed: {
@@ -127,7 +109,7 @@ export default defineComponent({
     boldness() {
       return (index: number) => {
         const itemAngle = this.startItemAngle + index * this.angleStep;
-        const diff = Math.abs(this.lineAngle - itemAngle);
+        const diff = Math.abs(this.uiStore.wheelPointerAngle - itemAngle);
 
         if (diff < 0.5) {
           return 800;
@@ -166,3 +148,25 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.menu-item {
+  transition: transform 0.3s ease;
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+</style>
