@@ -1,8 +1,7 @@
 <template>  
-<input type="number" v-model="uiStore.wheelPointerAngle" />
-  <div style="z-index: 200; position: fixed; top: 50%; right: 10px; opacity: 0.2; transform: translateY(-50%) rotate(270deg); ">
-    <input type="range" min="155" max="207" step="0.001" v-model="uiStore.wheelPointerAngle" />
-  </div>
+  <BS5DebugOverlay />
+  <MainCircleArc />
+  <VolumeArc />
   <div style="position: absolute; top: 20px; left: 180px; z-index: 1; width: 820px; height: 700px;">
     <router-view v-slot="{ Component }">
       <transition name="slide-up" mode="out-in">
@@ -10,14 +9,8 @@
       </transition>
     </router-view>
   </div>
-  <svg width="1024" height="768" style="position: relative; z-index: 100;">
+  <svg width="1024" height="768" style="position: absolute; z-index: 100;">
     <defs>
-    <linearGradient id="gradient" gradientTransform="rotate(90)">
-      <stop offset="0%" stop-color="rgba(102,153,255,0)" />
-      <stop offset="5%" stop-color="rgba(102,153,255,1)" />
-      <stop offset="95%" stop-color="rgba(0,255,204,1)" />
-      <stop offset="100%" stop-color="rgba(0,255,204,0)" />
-    </linearGradient>
     <radialGradient id="lineGradient"> 
       <stop offset="0%" stop-color="rgba(102,153,255,0.45)" />
       <stop offset="90%" stop-color="rgba(0,0,0,0)" />
@@ -54,12 +47,6 @@
       filter="url(#exposureFilter)"
       :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
-    <path
-      :d="describeArc(cx, cy, radius, startArcAngle, endArcAngle)"
-      fill="none"
-      stroke="url(#gradient)" 
-      stroke-width="3"
-    />
     <!-- Menu items positioned along the arc -->
     <g v-for="(item, index) in menuItems" :key="index">
       <text
@@ -82,9 +69,15 @@
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router'
 import { useUIStore } from '../stores/ui';
+import BS5DebugOverlay from './debug-overlay.vue';
+import MainCircleArc from './main-circle-arc.vue';
+import VolumeArc from './volume-arc.vue';
 
 export default defineComponent({
   name: 'BS5Shell',
+  components: {
+    BS5DebugOverlay, MainCircleArc, VolumeArc
+  },
   setup() {
     const router = useRouter();
     const uiStore = useUIStore();
@@ -94,9 +87,9 @@ export default defineComponent({
   data() {
     return {
       menuItems: [{title: 'SETTINGS', path: '/'}, {title: 'SOURCES', path: '/'}, {title: 'N.RADIO', path: '/radio'}, {title: 'N.MUSIC', path: '/music'} ],
-      cx: 1300, // Center x coordinate
+      cx: 1024, // Center x coordinate
       cy: 384, // Center y coordinate
-      radius: 1150, // Adjusted radius to fit within the viewport
+      radius: 880, // Adjusted radius to fit within the viewport
       startArcAngle: 162, // Starting angle for the first menu item
       endArcAngle: 199, // Ending angle for the last menu item
       startItemAngle: 172, // Angle for the first menu item
