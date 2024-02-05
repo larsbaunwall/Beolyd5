@@ -6,8 +6,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "bs5-controller",
-    "version": "0.0.0"
+    "productName": "bs5-controller-ui",
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
@@ -20,7 +20,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.beolyd5.dev",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",

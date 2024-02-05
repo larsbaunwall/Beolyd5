@@ -1,10 +1,10 @@
 [package]
-name = "bs5-controller"
-version = "0.0.0"
+name = "bs5-controller-ui"
+version = "0.1.0"
 description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+authors = ["Lars Baunwall"]
+license = "Apache-2.0"
+repository = "https://github.com/larsbaunwall/beolyd5"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
