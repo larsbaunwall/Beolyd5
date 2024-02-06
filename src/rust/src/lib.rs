@@ -149,8 +149,8 @@ impl Beolyd5Controller {
     }
 
     fn handle_device_event(&self, event: [u8; 6]) {
-        let wheel_changed = self.handle_wheel_event(event);
-        let button_pressed = self.handle_button_event(event);
+        let _wheel_changed = self.handle_wheel_event(event);
+        let _button_pressed = self.handle_button_event(event);
 
         let device_event_callbacks = self.device_event_callbacks.clone();
         let last_read_clone = self.last_read.lock().unwrap().clone();
