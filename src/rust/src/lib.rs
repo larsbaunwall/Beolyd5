@@ -7,7 +7,7 @@ use std::thread;
 use std::thread::JoinHandle;
 use hidapi::HidApi;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Button {
     None,
     Left,
@@ -16,7 +16,7 @@ pub enum Button {
     Standby
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Wheel {
     Front,
     Angular,
