@@ -1,7 +1,7 @@
 extern crate beolyd5_controller;
 
 use std::sync::{Arc, Mutex};
-use beolyd5_controller::{Beolyd5Controller, SystemEvent};
+use beolyd5_controller::{Beolyd5Controller, Button, SystemEvent, Wheel};
 
 
 fn main() {
@@ -10,10 +10,18 @@ fn main() {
 
     // Register a callback to handle device events
     controller.lock().unwrap().register_device_event_callback(Arc::new(Mutex::new(move |event: SystemEvent| {
-        println!("Received event: {:?}", event);
+        println!("** Received SystemEvent: {:?}", event);
 
         // Emit click sound
         //controller_clone.lock().unwrap().click().unwrap();
+    })));
+
+    controller.lock().unwrap().register_wheel_event_callback(Arc::new(Mutex::new(move |(wheel, pos): (Wheel, u8)| {
+        println!("   Received WheelEvent: {:?} at position {}", wheel, pos);
+    })));
+
+    controller.lock().unwrap().register_button_event_callback(Arc::new(Mutex::new(move |button: Button| {
+        println!("   Received ButtonEvent: {:?}", button);
     })));
 
     // Open the device

@@ -17,10 +17,18 @@ pub enum Button {
 }
 
 #[derive(Debug, Copy, Clone)]
+pub enum Wheel {
+    Front,
+    Angular,
+    Back,
+    None
+}
+
+#[derive(Debug, Copy, Clone)]
 pub struct SystemEvent {
     pub event_bytes: [u8; 6],
     pub last_read_bytes: [u8; 6],
-    pub top_wheel_pos: u8,
+    pub front_wheel_pos: u8,
     pub angular_wheel_pos: u8,
     pub back_wheel_pos: u8,
     pub button_pressed: Button
@@ -32,8 +40,14 @@ pub struct Beolyd5Controller {
     vendor_id: u16,
     product_id: u16,
     last_read: Arc<Mutex<[u8; 6]>>,
+    last_button_pressed: Arc<Mutex<Button>>,
+    last_front_wheel_pos: Arc<Mutex<u8>>,
+    last_angular_wheel_pos: Arc<Mutex<u8>>,
+    last_back_wheel_pos: Arc<Mutex<u8>>,
     is_running: Arc<AtomicBool>,
     device_event_callbacks: Vec<Arc<Mutex<dyn Fn(SystemEvent) + Send>>>,
+    wheel_event_callbacks: Vec<Arc<Mutex<dyn Fn((Wheel, u8)) + Send>>>,
+    button_event_callbacks: Vec<Arc<Mutex<dyn Fn(Button) + Send>>>,
     device: Option<Arc<Mutex<hidapi::HidDevice>>>
 }
 
@@ -45,8 +59,14 @@ impl Beolyd5Controller {
             vendor_id: 0x0cd4,
             product_id: 0x1112,
             last_read: Arc::new(Mutex::new([0u8; 6])),
+            last_button_pressed: Arc::new(Mutex::new(Button::None)),
+            last_front_wheel_pos: Arc::new(Mutex::new(0)),
+            last_angular_wheel_pos: Arc::new(Mutex::new(0)),
+            last_back_wheel_pos: Arc::new(Mutex::new(0)),
             is_running: Arc::new(AtomicBool::new(false)),
             device_event_callbacks: Vec::new(),
+            wheel_event_callbacks: Vec::new(),
+            button_event_callbacks: Vec::new(),
             device: None
         }
     }
@@ -120,31 +140,106 @@ impl Beolyd5Controller {
         self.device_event_callbacks.push(callback);
     }
 
+    pub fn register_wheel_event_callback(&mut self, callback: Arc<Mutex<dyn Fn((Wheel, u8)) + Send>>) {
+        self.wheel_event_callbacks.push(callback);
+    }
+
+    pub fn register_button_event_callback(&mut self, callback: Arc<Mutex<dyn Fn(Button) + Send>>) {
+        self.button_event_callbacks.push(callback);
+    }
+
     fn handle_device_event(&self, event: [u8; 6]) {
+        let wheel_changed = self.handle_wheel_event(event);
+        let button_pressed = self.handle_button_event(event);
+
         let device_event_callbacks = self.device_event_callbacks.clone();
         let last_read_clone = self.last_read.lock().unwrap().clone();
 
-        let sys_event = SystemEvent {
-            event_bytes: event,
-            last_read_bytes: last_read_clone,
-            top_wheel_pos: event[0],
-            back_wheel_pos: event[1],
-            angular_wheel_pos: event[2],
-            button_pressed: match event[3] {
-                0x00 => Button::None,
-                0x20 => Button::Left,
-                0x10 => Button::Right,
-                0x40 => Button::Go,
-                0x80 => Button::Standby,
-                _ => Button::None
-            }
+        let button_pressed = match event[3] {
+            0x00 => Button::None,
+            0x20 => Button::Left,
+            0x10 => Button::Right,
+            0x40 => Button::Go,
+            0x80 => Button::Standby,
+            _ => Button::None
         };
 
-        for callback in &device_event_callbacks {
-            let callback = callback.lock().unwrap();
-            callback(sys_event.clone());
+        let top_wheel_pos = event[0];
+        let angular_wheel_pos = event[2];
+        let back_wheel_pos = event[1];
+
+        if *self.last_button_pressed.lock().unwrap() != button_pressed ||
+            *self.last_front_wheel_pos.lock().unwrap() != top_wheel_pos ||
+            *self.last_angular_wheel_pos.lock().unwrap() != angular_wheel_pos ||
+            *self.last_back_wheel_pos.lock().unwrap() != back_wheel_pos {
+
+            let sys_event = SystemEvent {
+                event_bytes: event,
+                last_read_bytes: last_read_clone,
+                front_wheel_pos: top_wheel_pos,
+                back_wheel_pos: back_wheel_pos,
+                angular_wheel_pos: angular_wheel_pos,
+                button_pressed: button_pressed
+            };
+
+            for callback in &device_event_callbacks {
+                let callback = callback.lock().unwrap();
+                callback(sys_event.clone());
+            }
+            *self.last_read.lock().unwrap() = event;
+            *self.last_button_pressed.lock().unwrap() = button_pressed;
+            *self.last_front_wheel_pos.lock().unwrap() = top_wheel_pos;
+            *self.last_angular_wheel_pos.lock().unwrap() = angular_wheel_pos;
+            *self.last_back_wheel_pos.lock().unwrap() = back_wheel_pos;
         }
-        *self.last_read.lock().unwrap() = event;
+    }
+
+    fn handle_wheel_event(&self, event: [u8; 6]) -> (Wheel, u8) {
+        let top_wheel_pos = event[0];
+        let angular_wheel_pos = event[2];
+        let back_wheel_pos = event[1];
+
+        let wheel_changed = if *self.last_front_wheel_pos.lock().unwrap() != top_wheel_pos {
+            *self.last_front_wheel_pos.lock().unwrap() = top_wheel_pos;
+            (Wheel::Front, top_wheel_pos)
+        } else if *self.last_angular_wheel_pos.lock().unwrap() != angular_wheel_pos {
+            *self.last_angular_wheel_pos.lock().unwrap() = angular_wheel_pos;
+            (Wheel::Angular, angular_wheel_pos)
+        } else if *self.last_back_wheel_pos.lock().unwrap() != back_wheel_pos {
+            *self.last_back_wheel_pos.lock().unwrap() = back_wheel_pos;
+            (Wheel::Back, back_wheel_pos)
+        } else {
+            (Wheel::None, 0)
+        };
+        if wheel_changed.0 != Wheel::None {
+            for callback in &self.wheel_event_callbacks {
+                let callback = callback.lock().unwrap();
+                callback(wheel_changed);
+            }
+        }
+
+        wheel_changed
+    }
+
+    fn handle_button_event(&self, event: [u8; 6]) -> Button {
+        let button_pressed = match event[3] {
+            0x00 => Button::None,
+            0x20 => Button::Left,
+            0x10 => Button::Right,
+            0x40 => Button::Go,
+            0x80 => Button::Standby,
+            _ => Button::None
+        };
+
+        if *self.last_button_pressed.lock().unwrap() != button_pressed {
+            *self.last_button_pressed.lock().unwrap() = button_pressed;
+            for callback in &self.button_event_callbacks {
+                let callback = callback.lock().unwrap();
+                callback(button_pressed);
+            }
+        }
+
+        button_pressed
     }
 }
 
@@ -167,8 +262,14 @@ impl Clone for Beolyd5Controller {
             vendor_id: self.vendor_id,
             product_id: self.product_id,
             last_read: self.last_read.clone(),
+            last_button_pressed: self.last_button_pressed.clone(),
+            last_front_wheel_pos: self.last_front_wheel_pos.clone(),
+            last_angular_wheel_pos: self.last_angular_wheel_pos.clone(),
+            last_back_wheel_pos: self.last_back_wheel_pos.clone(),
             is_running: self.is_running.clone(),
             device_event_callbacks: self.device_event_callbacks.clone(),
+            wheel_event_callbacks: self.wheel_event_callbacks.clone(),
+            button_event_callbacks: self.button_event_callbacks.clone(),
             device: self.device.clone()
         }
     }

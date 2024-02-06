@@ -5,7 +5,7 @@ license = "Apache-2.0"
 authors = ["Lars Baunwall"]
 documentation = "https://github.com/larsbaunwall/beolyd5"
 repository = "https://github.com/larsbaunwall/beolyd5"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
