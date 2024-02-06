@@ -59,7 +59,7 @@
         fill="white" 
         class="menu-item"
       >
-        {{ item.title }}
+        {{ item.title }} {{ this.startItemAngle + index * this.angleStep }}
       </text>
     </g>
   </svg>
@@ -67,8 +67,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router';
 import { useUIStore } from '../stores/ui';
+import arcs from '../utils/arcs';
 import BS5DebugOverlay from './debug-overlay.vue';
 import MainCircleArc from './main-circle-arc.vue';
 import VolumeArc from './volume-arc.vue';
@@ -87,12 +88,12 @@ export default defineComponent({
   data() {
     return {
       menuItems: [{title: 'SETTINGS', path: '/'}, {title: 'SOURCES', path: '/'}, {title: 'N.RADIO', path: '/radio'}, {title: 'N.MUSIC', path: '/music'} ],
-      cx: 1024, // Center x coordinate
-      cy: 384, // Center y coordinate
-      radius: 880, // Adjusted radius to fit within the viewport
-      startArcAngle: 162, // Starting angle for the first menu item
-      endArcAngle: 199, // Ending angle for the last menu item
-      startItemAngle: 172, // Angle for the first menu item
+      cx: arcs.cx, // Center x coordinate
+      cy: arcs.cy, // Center y coordinate
+      radius: 1000, // Adjusted radius to fit within the viewport
+      startArcAngle: 158, // Starting angle for the first menu item
+      endArcAngle: 202, // Ending angle for the last menu item
+      startItemAngle: 167, // Angle for the first menu item
     };
   },
   computed: {

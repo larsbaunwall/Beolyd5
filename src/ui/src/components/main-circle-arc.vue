@@ -25,9 +25,9 @@ export default defineComponent({
     },
     data() {
         return {
-            radius: 880,
-            startArcAngle: 157,
-            endArcAngle: 205,
+            radius: 1000,
+            startArcAngle: 158,
+            endArcAngle: 202,
         };
     },
     computed: {

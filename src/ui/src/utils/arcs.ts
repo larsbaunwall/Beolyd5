@@ -17,7 +17,7 @@ export function describeArc(x: number, y: number, radius: number, startAngle: nu
     return d;
 }
 
-export const cx: number = 1024;
-export const cy: number = 768 / 2;
+export const cx: number = 1147;
+export const cy: number = 387;
 
 export default { describeArc, cx, cy }

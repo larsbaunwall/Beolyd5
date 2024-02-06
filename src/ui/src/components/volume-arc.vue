@@ -25,7 +25,7 @@ export default defineComponent({
     },
     data() {
         return {
-            radius: 150,
+            radius: 270,
             startArcAngle: 95,
             endArcAngle: 265,
         };

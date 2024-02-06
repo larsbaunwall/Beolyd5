@@ -1,5 +1,5 @@
 <template>
-    <div style="z-index: 1000; position: fixed; top: 0%; right: 0%; opacity: 0.3; ">
+    <div style="z-index: 1000; position: fixed; top: 0%; right: 0%; opacity: 0.1; ">
         <input type="number" v-model="uiStore.wheelPointerAngle" />
         <input type="number" v-model="uiStore.volume" />
     </div>
