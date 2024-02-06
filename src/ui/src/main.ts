@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { createPinia } from "pinia";
+import { emit, listen } from '@tauri-apps/api/event'
 
 import "./styles.css";
 import App from "./App.vue";
@@ -29,3 +30,9 @@ createApp(App)
     .use(pinia)
     .use(router)
     .mount("#app");
+
+const unlisten = await listen('wheelEvent', (event) => {
+    console.log('Received event', event);
+    });
+
+
