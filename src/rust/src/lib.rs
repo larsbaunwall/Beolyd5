@@ -7,7 +7,7 @@ use std::thread;
 use std::thread::JoinHandle;
 use hidapi::HidApi;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum Button {
     None,
     Left,
@@ -16,7 +16,7 @@ pub enum Button {
     Standby
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum Wheel {
     Front,
     Angular,
@@ -24,7 +24,7 @@ pub enum Wheel {
     None
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, serde::Serialize, serde::Deserialize)]
 pub struct SystemEvent {
     pub event_bytes: [u8; 6],
     pub last_read_bytes: [u8; 6],
