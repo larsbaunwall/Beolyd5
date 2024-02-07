@@ -24,6 +24,9 @@ fn main() {
             let controller = Arc::new(Mutex::new(Beolyd5Controller::new()));
             let controller_clone = Arc::clone(&controller);
 
+            let app_handle_clone = app_handle.clone();
+            app_handle_clone.emit_all("wheelEvent", ()).unwrap();
+
             let _ = match controller_clone.lock().unwrap().open() {
                 Ok(_) => app_handle.emit_all("deviceOpened", ()),
                 Err(err) => app_handle.emit_all("error", Payload {
