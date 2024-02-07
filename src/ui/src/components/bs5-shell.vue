@@ -59,7 +59,7 @@
         fill="white" 
         class="menu-item"
       >
-        {{ item.title }} {{ this.startItemAngle + index * this.angleStep }}
+        {{ item.title }}
       </text>
     </g>
   </svg>

@@ -20,4 +20,8 @@ export function describeArc(x: number, y: number, radius: number, startAngle: nu
 export const cx: number = 1147;
 export const cy: number = 387;
 
-export default { describeArc, cx, cy }
+export function translateToRange(input: number, min: number, max: number): number {
+    return (input * (max - min)) / (100 - 0) + min;
+}
+
+export default { describeArc, cx, cy, translateToRange }
