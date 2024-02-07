@@ -6,14 +6,12 @@ use beolyd5_controller::{Beolyd5Controller, Button, SystemEvent, Wheel};
 
 fn main() {
     let controller = Arc::new(Mutex::new(Beolyd5Controller::new()));
-    let controller_clone = Arc::clone(&controller);
+    let controller_clone = controller.clone();
 
     // Register a callback to handle device events
     controller.lock().unwrap().register_device_event_callback(Arc::new(Mutex::new(move |event: SystemEvent| {
         println!("** Received SystemEvent: {:?}", event);
 
-        // Emit click sound
-        //controller_clone.lock().unwrap().click().unwrap();
     })));
 
     controller.lock().unwrap().register_wheel_event_callback(Arc::new(Mutex::new(move |(wheel, pos): (Wheel, u8)| {
@@ -22,6 +20,11 @@ fn main() {
 
     controller.lock().unwrap().register_button_event_callback(Arc::new(Mutex::new(move |button: Button| {
         println!("   Received ButtonEvent: {:?}", button);
+
+        if button != Button::None {
+            // Emit click sound
+            controller_clone.lock().unwrap().click().unwrap();
+        }
     })));
 
     // Open the device
@@ -32,6 +35,6 @@ fn main() {
 
     // Keep the main thread alive to continue receiving events
     loop {
-        std::thread::sleep(std::time::Duration::from_secs(1));
+        std::thread::sleep(std::time::Duration::from_millis(1));
     }
 }

@@ -194,18 +194,22 @@ impl Beolyd5Controller {
         }
     }
 
+    /*
+     * Front and back wheels are only untouched if they are 0
+     * Angular wheel is only untouched if it is the same as the last reading
+     */
     fn handle_wheel_event(&self, event: [u8; 6]) -> (Wheel, u8) {
-        let top_wheel_pos = event[0];
+        let front_wheel_pos = event[0];
         let angular_wheel_pos = event[2];
         let back_wheel_pos = event[1];
 
-        let wheel_changed = if *self.last_front_wheel_pos.lock().unwrap() != top_wheel_pos {
-            *self.last_front_wheel_pos.lock().unwrap() = top_wheel_pos;
-            (Wheel::Front, top_wheel_pos)
+        let wheel_changed = if front_wheel_pos != 0 {
+            *self.last_front_wheel_pos.lock().unwrap() = front_wheel_pos;
+            (Wheel::Front, front_wheel_pos)
         } else if *self.last_angular_wheel_pos.lock().unwrap() != angular_wheel_pos {
             *self.last_angular_wheel_pos.lock().unwrap() = angular_wheel_pos;
             (Wheel::Angular, angular_wheel_pos)
-        } else if *self.last_back_wheel_pos.lock().unwrap() != back_wheel_pos {
+        } else if back_wheel_pos != 0 {
             *self.last_back_wheel_pos.lock().unwrap() = back_wheel_pos;
             (Wheel::Back, back_wheel_pos)
         } else {
