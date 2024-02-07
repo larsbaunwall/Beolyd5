@@ -107,7 +107,7 @@ export default defineComponent({
 
         if (diff < 0.5) {
           return 800;
-        } else if (diff < 1) {
+        } else if (diff <= 1) {
           this.uiStore.tick();
           this.router.push(this.menuItems[index].path);
           return 400;
