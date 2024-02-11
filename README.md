@@ -1,4 +1,4 @@
-```
+```ascii
    ____             _           _ _____                          
   |  _ \           | |         | | ____|                         
   | |_) | ___  ___ | |_   _  __| | |__                           
@@ -31,7 +31,6 @@ This is a very early version of the [new UI](src/ui):
 
 ![UI demo](src/ui/docs/demo-v1.gif)
 
-
 ## Plans
 
 ### The hardware
@@ -61,13 +60,18 @@ Hifiberry in itself will bring support for
 * Roon
 * Web radio stations
 
-I am exploring a .NET route (which is where I am most comfortable) and a Rust-based approach. The UI is probably going to be web-based on top of WebKitGTK. 
+~~I am exploring a .NET route (which is where I am most comfortable) and a Rust-based approach. The UI is probably going to be web-based on top of WebKitGTK.~~
 
-Currently, [Tauri](https://tauri.app/)/[WRY](https://github.com/tauri-apps/wry) (Rust-based) looks like good candidates for the UI platform. This will then bridge the BS5 controller with the web UI via a Javascript-bridge.
+~~Currently, [Tauri](https://tauri.app/)/[WRY](https://github.com/tauri-apps/wry) (Rust-based) looks like good candidates for the UI platform. This will then bridge the BS5 controller with the web UI via a Javascript-bridge.~~
 
-## Support
+**Update:** The application consist of two parts:
 
-This is a hobby project of mine.  I don't know when I will be done or how it will look. 
+1. a [Rust-based HW abstraction](src/rust) that interfaces with the BS5 controller. This library understands the BS5 controller protocol over USB and is also available on [crates.io](https://crates.io/crates/beolyd5_controller)
+2. a [Tauri](https://tauri.app/)-based application that hosts a [VueJS-frontend](src/ui/src) using a platform-specific renderer (Webkit2GTK on Linux). This application mimicks the original interface found on the Beosund 5.
+
+## Contributing
+
+This is a hobby project of mine.  I don't know when I will be done or how it will look.
 
 I am not a UI designer, so I could use some help in that department. Likewise, I am still a beginner in the embedded world, so defintately would appreciate a helping hand there as well.
 
