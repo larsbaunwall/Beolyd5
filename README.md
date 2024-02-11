@@ -1,3 +1,6 @@
+[![Crates.io Version](https://img.shields.io/crates/v/beolyd5_controller?style=flat-square&logo=rust)](https://crates.io/crates/beolyd5_controller)
+
+
 ```ascii
    ____             _           _ _____                          
   |  _ \           | |         | | ____|                         
