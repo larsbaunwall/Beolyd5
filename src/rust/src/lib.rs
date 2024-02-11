@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024. Lars Baunwall. All rights reserved.
+ * Use of this source code is governed by an Apache 2.0 license that can be found in the LICENSE file.
+ */
+
+
 use hidapi::HidApi;
 use std::error::Error;
 use std::io::ErrorKind;
@@ -9,6 +15,8 @@ use types::{Button, SystemEvent, Wheel};
 
 pub mod types;
 
+/// `Beolyd5Controller` is a struct that represents a BeoSound 5 controller.
+/// It provides methods to open the device, send commands, and register callbacks for device events.
 pub struct Beolyd5Controller {
     threads: Vec<JoinHandle<Result<(), Box<dyn Error + Send>>>>,
     vendor_id: u16,
@@ -26,6 +34,7 @@ pub struct Beolyd5Controller {
 }
 
 impl Beolyd5Controller {
+    /// Creates a new `Beolyd5Controller` without opening it.
     pub fn new() -> Beolyd5Controller {
         Beolyd5Controller {
             threads: Vec::new(),
@@ -44,6 +53,8 @@ impl Beolyd5Controller {
         }
     }
 
+    /// Opens the device and starts a new thread to handle device events.
+    /// Returns `Ok(())` if the device was opened successfully, or an `Err` if the device could not be found or accessed.
     pub fn open(&mut self) -> Result<(), Box<dyn Error>> {
         let is_running = self.is_running.clone();
 
@@ -78,6 +89,8 @@ impl Beolyd5Controller {
         Ok(())
     }
 
+    /// Sends a tick command (the sound!) to the device.
+    /// Returns `Ok(())` if the command was sent successfully, or an `Err` if there was a problem sending the command.
     pub fn tick(&self) -> Result<(), Box<dyn Error>> {
         self.send([0x00, 0x31])
     }
@@ -115,10 +128,12 @@ impl Beolyd5Controller {
         Ok(())
     }
 
+    /// Closes the device and stops handling device events.
     pub fn close(&self) {
         self.is_running.store(false, Ordering::Relaxed);
     }
 
+    /// Registers a callback to be called when any device event occurs.
     pub fn register_device_event_callback(
         &mut self,
         callback: Arc<Mutex<dyn Fn(SystemEvent) -> Result<(), Box<dyn Error + Send>> + Send>>,
@@ -126,6 +141,7 @@ impl Beolyd5Controller {
         self.device_event_callbacks.push(callback);
     }
 
+    /// Registers a callback to be called when a wheel event occurs.
     pub fn register_wheel_event_callback(
         &mut self,
         callback: Arc<Mutex<dyn Fn((Wheel, u8)) -> Result<(), Box<dyn Error + Send>> + Send>>,
@@ -133,6 +149,7 @@ impl Beolyd5Controller {
         self.wheel_event_callbacks.push(callback);
     }
 
+    /// Registers a callback to be called when a button event occurs.
     pub fn register_button_event_callback(&mut self, callback: Arc<Mutex<dyn Fn(Button) -> Result<(), Box<dyn Error + Send>> + Send>>) {
         self.button_event_callbacks.push(callback);
     }

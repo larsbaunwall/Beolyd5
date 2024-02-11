@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024. Lars Baunwall. All rights reserved.
+ * Use of this source code is governed by an Apache 2.0 license that can be found in the LICENSE file.
+ */
+
 extern crate beolyd5_controller;
 
 use std::error::Error;
