@@ -7,21 +7,21 @@ use std::sync::Mutex;
 use hw_controller::HWController;
 use tauri::{generate_context, Manager};
 
-// remember to call `.manage(MyState::default())`
+
 #[tauri::command]
-async fn click(state: tauri::State<'_, Mutex<HWController>>) -> Result<(), ()> {
+async fn tick(state: tauri::State<'_, Mutex<HWController>>) -> Result<(), ()> {
   let controller = match state.lock() {
     Ok(controller) => controller,
     Err(_) => return Err(()),
   };
-  controller.click();
+  controller.tick().expect("TODO: panic message");
 
   Ok(())
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![click])
+        .invoke_handler(tauri::generate_handler![tick])
         .setup(|app| {
             let app_handle = app.handle();
             let hw: HWController = HWController::new(app_handle.clone());

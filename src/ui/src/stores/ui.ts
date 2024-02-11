@@ -8,7 +8,7 @@ export const useUIStore = defineStore('ui', () => {
   const wheelPointerAngle = ref(180);
 
   const tick = () => {
-    invoke('click');
+    invoke('tick');
   }
 
   return {volume, wheelPointerAngle, tick}
