@@ -155,8 +155,12 @@ impl Beolyd5Controller {
     }
 
     fn handle_device_event(&self, event: [u8; 6]) -> Result<(), Box<dyn Error + Send>> {
-        let wheel_changed = self.get_wheel_moved(event);
+        let wheel_changed = Self::get_wheel_moved(event, self.last_read.lock().unwrap().clone());
         let button_pressed = Self::get_button_pressed(event);
+
+        let top_wheel_pos = event[0];
+        let angular_wheel_pos = event[2];
+        let back_wheel_pos = event[1];
 
         if wheel_changed.0 != Wheel::None {
             self.handle_wheel_event(event)?;
@@ -164,19 +168,14 @@ impl Beolyd5Controller {
             self.handle_button_event(event)?;
         }
 
-        let device_event_callbacks = self.device_event_callbacks.clone();
-        let last_read_clone = self.last_read.lock().unwrap().clone();
-
-        let top_wheel_pos = event[0];
-        let angular_wheel_pos = event[2];
-        let back_wheel_pos = event[1];
-
         *self.last_read.lock().unwrap() = event;
         *self.last_button_pressed.lock().unwrap() = button_pressed;
         *self.last_front_wheel_pos.lock().unwrap() = top_wheel_pos;
         *self.last_angular_wheel_pos.lock().unwrap() = angular_wheel_pos;
         *self.last_back_wheel_pos.lock().unwrap() = back_wheel_pos;
 
+        let device_event_callbacks = self.device_event_callbacks.clone();
+        let last_read_clone = self.last_read.lock().unwrap().clone();
         let sys_event = SystemEvent {
             event_bytes: event,
             last_read_bytes: last_read_clone,
@@ -195,7 +194,7 @@ impl Beolyd5Controller {
     }
 
     fn handle_wheel_event(&self, event: [u8; 6]) -> Result<(), Box<dyn Error + Send>> {
-        let wheel_changed = self.get_wheel_moved(event);
+        let wheel_changed = Self::get_wheel_moved(event, self.last_read.lock().unwrap().clone());
         if wheel_changed.0 != Wheel::None {
             for callback in &self.wheel_event_callbacks {
                 let callback = callback.lock().unwrap();
@@ -210,25 +209,20 @@ impl Beolyd5Controller {
      * Front and back wheels are only untouched if they are 0
      * Angular wheel is only untouched if it is the same as the last reading
      */
-    fn get_wheel_moved(&self, event: [u8; 6]) -> (Wheel, u8) {
+    fn get_wheel_moved(event: [u8; 6], last_read: [u8; 6]) -> (Wheel, u8) {
         let front_wheel_pos = event[0];
         let angular_wheel_pos = event[2];
         let back_wheel_pos = event[1];
 
-        let wheel_changed = if front_wheel_pos != 0 {
-            *self.last_front_wheel_pos.lock().unwrap() = front_wheel_pos;
+        return if front_wheel_pos != 0 {
             (Wheel::Front, front_wheel_pos)
-        } else if *self.last_angular_wheel_pos.lock().unwrap() != angular_wheel_pos {
-            *self.last_angular_wheel_pos.lock().unwrap() = angular_wheel_pos;
+        } else if last_read[2] != angular_wheel_pos {
             (Wheel::Angular, angular_wheel_pos)
         } else if back_wheel_pos != 0 {
-            *self.last_back_wheel_pos.lock().unwrap() = back_wheel_pos;
             (Wheel::Back, back_wheel_pos)
         } else {
             (Wheel::None, 0)
         };
-
-        wheel_changed
     }
 
     fn handle_button_event(&self, event: [u8; 6]) -> Result<(), Box<dyn Error + Send>> {
