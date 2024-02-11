@@ -1,25 +1,33 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod hw_init;
+mod hw_controller;
 
+use std::sync::Mutex;
+use hw_controller::HWController;
+use tauri::{generate_context, Manager};
+
+// remember to call `.manage(MyState::default())`
 #[tauri::command]
-fn tick() {
-  println!("Tick");
+async fn click(state: tauri::State<'_, Mutex<HWController>>) -> Result<(), ()> {
+  let controller = match state.lock() {
+    Ok(controller) => controller,
+    Err(_) => return Err(()),
+  };
+  controller.click();
+
+  Ok(())
 }
 
-use std::sync::{Arc, Mutex};
-use beolyd5_controller::{Beolyd5Controller};
-use tauri::generate_context;
-
 fn main() {
-    let controller = Arc::new(Mutex::new(Beolyd5Controller::new()));
-
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![tick])
-        .setup(move |app| {
+        .invoke_handler(tauri::generate_handler![click])
+        .setup(|app| {
             let app_handle = app.handle();
-            hw_init::wire_up(app_handle, controller.clone());
+            let hw: HWController = HWController::new(app_handle.clone());
+            app.manage(Mutex::new(hw.clone()));
+
+            hw.init();
 
             Ok(())
           })

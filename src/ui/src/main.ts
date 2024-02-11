@@ -48,6 +48,10 @@ const unlisten = listen('wheelEvent', (event) => {
     }
 });
 
-export function wheelSpinDifference(value: number): number {
+const diags = listen('diagnostics', (event) => {
+    console.log({event});
+});
+
+function wheelSpinDifference(value: number): number {
     return value <= 125 ? value : (256 - value) * -1;
 }
