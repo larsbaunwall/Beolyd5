@@ -9,7 +9,7 @@
             </linearGradient>
         </defs>
         <!-- Arc path for reference -->
-        <path :d="describeArc(radius, startArcAngle, endArcAngle)" fill="none" stroke="url(#gradient)"
+        <path :d="describeArc(startArcAngle, endArcAngle)" fill="none" stroke="url(#gradient)"
             stroke-width="3" stroke-linecap="round" />
     </svg>
 </template>
@@ -20,12 +20,18 @@ import arcs from '../utils/arcs';
 
 export default defineComponent({
     name: 'MainCircleArc',
+    props: {
+      radius: {
+        type: Number,
+        required: true,
+        default: 1000,
+      }
+    },
     setup() {
         return {};
     },
     data() {
         return {
-            radius: 1000,
             startArcAngle: 158,
             endArcAngle: 202,
         };
@@ -33,8 +39,8 @@ export default defineComponent({
     computed: {
     },
     methods: {
-        describeArc(radius: number, startAngle: number, endAngle: number) {
-            return arcs.describeArc(arcs.cx, arcs.cy, radius, startAngle, endAngle);            
+        describeArc(startAngle: number, endAngle: number) {
+            return arcs.describeArc(arcs.cx, arcs.cy, this.radius, startAngle, endAngle);
         },
     },
 });

@@ -1,6 +1,6 @@
 <template>  
   <BS5DebugOverlay />
-  <MainCircleArc />
+  <MainCircleArc :radius="radius"/>
   <VolumeArc />
   <div style="position: absolute; top: 20px; left: 180px; z-index: 1; width: 820px; height: 700px;">
     <router-view v-slot="{ Component }">
@@ -28,41 +28,27 @@
       </feComponentTransfer>
     </filter>
   </defs>
-    <!-- Arc path for reference -->
-
     <ellipse
-      :cx="getArcPoint(cx, cy, radius, 0, uiStore.wheelPointerAngle).x"
-      :cy="getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y"
+      :cx="getArcPoint(radius, 0, uiStore.wheelPointerAngle).x"
+      :cy="getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y"
       :rx="35"
       :ry="25"
       fill="url(#dotGradient)"
-      :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y})`"
+      :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
     <ellipse
-      :cx="getArcPoint(cx, cy, radius, 0, uiStore.wheelPointerAngle).x"
-      :cy="getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y"
+      :cx="getArcPoint(radius, 0, uiStore.wheelPointerAngle).x"
+      :cy="getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y"
       :rx="40"
       :ry="400"
       fill="url(#lineGradient)"
       filter="url(#exposureFilter)"
-      :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(cx, cy, radius, 0,  uiStore.wheelPointerAngle).y})`"
+      :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
-    <!-- Menu items positioned along the arc -->
-    <g v-for="(item, index) in menuItems" :key="index">
-      <text
-        :x="getArcPoint(cx, cy, radius, 20,  startItemAngle + index * (angleStep)).x"
-        :y="getArcPoint(cx, cy, radius, 20,  startItemAngle + index * (angleStep)).y"
-        dominant-baseline="middle"
-        text-anchor="end"
-        font-size="14"
-        :font-weight="boldness(index)"
-        fill="white" 
-        class="menu-item"
-      >
-        {{ item.title }}
-      </text>
-    </g>
   </svg>
+  <div v-for="(item, index) in menuItems" :key="index" class="menu-item" :style="menuItemStyle(index)" :class="{ selectedItem: isSelectedItem(index) }">
+    {{ item.title }}
+  </div>
 </template>
 
 <script lang="ts">
@@ -88,57 +74,49 @@ export default defineComponent({
   data() {
     return {
       menuItems: [{title: 'SETTINGS', path: '/'}, {title: 'SOURCES', path: '/'}, {title: 'N.RADIO', path: '/radio'}, {title: 'N.MUSIC', path: '/music'} ],
-      cx: arcs.cx, // Center x coordinate
-      cy: arcs.cy, // Center y coordinate
       radius: 1000, // Adjusted radius to fit within the viewport
-      startArcAngle: 158, // Starting angle for the first menu item
-      endArcAngle: 202, // Ending angle for the last menu item
-      startItemAngle: 167, // Angle for the first menu item
+      angleStep: 7, // Adjust this value to change the spacing between menu items
     };
   },
   computed: {
-    angleStep(): number {
-      return (this.endArcAngle - this.startArcAngle - 20) / (this.menuItems.length - 1);
-    },
-    boldness() {
-      return (index: number) => {
-        const itemAngle = this.startItemAngle + index * this.angleStep;
-        const diff = Math.abs(this.uiStore.wheelPointerAngle - itemAngle);
-
-        if (diff < 0.5) {
-          return 800;
-        } else if (diff <= 1) {
-          this.uiStore.tick();
-          this.router.push(this.menuItems[index].path);
-          return 400;
-        } else if (diff < 4) {
-          return 200;
-        } 
-          
-        return 100;
-      };
+    startItemAngle(): number {
+      const totalSpan = this.angleStep * (this.menuItems.length - 1);
+      return 180 - totalSpan / 2;
     },
   },
   methods: {
-    polarToCartesian(centerX: number, centerY: number, radius: number, angleInDegrees: number) {
-      const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
+    menuItemStyle(index: number) {
+      const itemAngle = this.startItemAngle + index * this.angleStep;
+      const position = this.getArcPoint(this.radius, 20, itemAngle);
+      const divWidth = 100;
+      const divHeight = 50;
       return {
-        x: centerX + radius * Math.cos(angleInRadians),
-        y: centerY + radius * Math.sin(angleInRadians),
+        position: 'absolute',
+        left: `${position.x - divWidth}px`,
+        top: `${position.y - divHeight / 2}px`,
+        width: `${divWidth}px`,
+        height: `${divHeight}px`,
       };
     },
-    describeArc(x: number, y: number, radius: number, startAngle: number, endAngle: number) {
-      const start = this.polarToCartesian(x, y, radius, endAngle);
-      const end = this.polarToCartesian(x, y, radius, startAngle);
-      const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
-      const d = [
-        'M', start.x, start.y,
-        'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
-      ].join(' ');
-      return d;
+    isSelectedItem(index: number) {
+      const itemAngle = this.startItemAngle + index * this.angleStep;
+      const diff = Math.abs(this.uiStore.wheelPointerAngle - itemAngle);
+      if (diff <= 1) {
+        this.uiStore.tick();
+        this.router.push(this.menuItems[index].path);
+        return true;
+      }
+      return false;
     },
-    getArcPoint(centerX: number, centerY: number, radius: number, radiusPadding: number, angle: number) {
-      return this.polarToCartesian(centerX, centerY, radius + radiusPadding, angle);
+    polarToCartesian(radius: number, angleInDegrees: number) {
+      const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
+      return {
+        x: arcs.cx + radius * Math.cos(angleInRadians),
+        y: arcs.cy + radius * Math.sin(angleInRadians),
+      };
+    },
+    getArcPoint(radius: number, radiusPadding: number, angle: number) {
+      return this.polarToCartesian(radius + radiusPadding, angle);
     },
   },
 });
@@ -146,7 +124,19 @@ export default defineComponent({
 
 <style scoped>
 .menu-item {
-  transition: transform 0.3s ease;
+  z-index: 1000;
+  font-weight: 100;
+  font-size: 14px;
+  color: white;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  transition: font-weight 0.5s ease-in-out;
+}
+
+.menu-item.selectedItem {
+  font-weight: bold;
+  transition: font-weight 0.5s ease-in-out;
 }
 
 .slide-up-enter-active,
