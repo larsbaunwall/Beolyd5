@@ -6,10 +6,11 @@ import { invoke } from "@tauri-apps/api";
 export const useUIStore = defineStore('ui', () => {
   const volume = ref(50);
   const wheelPointerAngle = ref(180);
+  const topWheelPosition = ref(0);
 
   const tick = () => {
-    invoke('tick');
+    //invoke('tick');
   }
 
-  return {volume, wheelPointerAngle, tick}
+  return {volume, wheelPointerAngle, topWheelPosition, tick}
 })
