@@ -64,7 +64,8 @@ const frontWheelEvents$ = wheelEvents.pipe(
     filter(event => event.payload.wheel === 'Front')
 ).pipe(bufferCount(10));
 
-frontWheelEvents$.subscribe((event) => {
+frontWheelEvents$.subscribe((events) => {
+    const event = events[events.length - 1];
     console.log(wheelSpinDifference(event.payload.position));
     uiStore.topWheelPosition = wheelSpinDifference(event.payload.position);
 });
