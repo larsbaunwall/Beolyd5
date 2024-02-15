@@ -46,7 +46,7 @@ const unlisten = listen('wheelEvent', (event) => {
         let newVolume = uiStore.volume + wheelSpinDifference(event.payload.position);
         uiStore.volume = Math.max(0, Math.min(newVolume, 100));
     }
-    if(event.payload.wheel == 'Top') {
+    if(event.payload.wheel == 'Front') {
         console.log(wheelSpinDifference(event.payload.position));
         uiStore.topWheelPosition = wheelSpinDifference(event.payload.position);
     }
