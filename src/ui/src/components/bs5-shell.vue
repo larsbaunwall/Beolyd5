@@ -1,6 +1,17 @@
 <template>  
   <BS5DebugOverlay />
   <MainCircleArc :radius="radius"/>
+  <ArcContentFlow :radius=300>
+    <template v-slot:0>
+      <div>Test 1</div>
+    </template>
+    <template v-slot:1>
+      <div>Test 2</div>
+    </template>
+    <template v-slot:2>
+      <div>Test 3</div>
+    </template>
+  </ArcContentFlow>
   <VolumeArc />
   <div style="position: absolute; top: 20px; left: 180px; z-index: 1; width: 820px; height: 700px;">
     <router-view v-slot="{ Component }">
@@ -9,7 +20,7 @@
       </transition>
     </router-view>
   </div>
-  <svg width="1024" height="768" style="position: absolute; z-index: 100;">
+  <svg id="anglePointer" width="1024" height="768" style="position: absolute; z-index: 100;">
     <defs>
     <radialGradient id="lineGradient"> 
       <stop offset="0%" stop-color="rgba(102,153,255,0.45)" />
@@ -27,13 +38,20 @@
         <feFuncB type="linear" slope="2" />
       </feComponentTransfer>
     </filter>
+    <filter id="blurPointerFilter">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
+    </filter>
+    <filter id="blurPointFilter">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+    </filter>
   </defs>
     <ellipse
       :cx="getArcPoint(radius, 0, uiStore.wheelPointerAngle).x"
       :cy="getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y"
-      :rx="35"
+      :rx="45"
       :ry="25"
       fill="url(#dotGradient)"
+      filter="url(#blurPointFilter)"
       :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
     <ellipse
@@ -42,11 +60,11 @@
       :rx="40"
       :ry="400"
       fill="url(#lineGradient)"
-      filter="url(#exposureFilter)"
+      filter="url(#exposureFilter) url(#blurPointerFilter)"
       :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
   </svg>
-  <div v-for="(item, index) in menuItems" :key="index" class="menu-item" :style="menuItemStyle(index)" :class="{ selectedItem: isSelectedItem(index) }">
+  <div v-for="(item, index) in menuItems" :key="index" class="list-item" :style="menuItemStyle(index)" :class="{ selectedItem: isSelectedItem(index) }">
     {{ item.title }}
   </div>
 </template>
@@ -59,11 +77,12 @@ import arcs from '../utils/arcs';
 import BS5DebugOverlay from './debug-overlay.vue';
 import MainCircleArc from './main-circle-arc.vue';
 import VolumeArc from './volume-arc.vue';
+import ArcContentFlow from './ArcContentFlow.vue';
 
 export default defineComponent({
   name: 'BS5Shell',
   components: {
-    BS5DebugOverlay, MainCircleArc, VolumeArc
+    BS5DebugOverlay, MainCircleArc, VolumeArc, ArcContentFlow
   },
   setup() {
     const router = useRouter();
@@ -123,7 +142,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.menu-item {
+.list-item {
   z-index: 1000;
   font-weight: 100;
   font-size: 14px;
@@ -134,7 +153,7 @@ export default defineComponent({
   transition: font-weight 0.5s ease-in-out;
 }
 
-.menu-item.selectedItem {
+.list-item.selectedItem {
   font-weight: bold;
   transition: font-weight 0.5s ease-in-out;
 }
