@@ -13,6 +13,7 @@
     "@tauri-apps/api": "^1.5.2",
     "@typehaus/metropolis": "^12.0.0-next.7",
     "pinia": "^2.1.7",
+    "rxjs": "^7.8.1",
     "vue": "^3.3.4",
     "vue-router": "4"
   },
