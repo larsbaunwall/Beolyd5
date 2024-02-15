@@ -45,23 +45,27 @@
       <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
     </filter>
   </defs>
-    <ellipse
-      :cx="getArcPoint(radius, 0, uiStore.wheelPointerAngle).x"
-      :cy="getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y"
-      :rx="45"
+    <ellipse id="pointerDot"
+             :style="{
+               '--cx': `${getArcPoint(radius, 0, uiStore.wheelPointerAngle).x}px`,
+               '--cy': `${getArcPoint(radius, 0, uiStore.wheelPointerAngle).y}px`,
+               'transform': `rotate(${uiStore.wheelPointerAngle - 90}deg)`
+             }"
+             :rx="45"
       :ry="25"
       fill="url(#dotGradient)"
       filter="url(#blurPointFilter)"
-      :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
-    <ellipse
-      :cx="getArcPoint(radius, 0, uiStore.wheelPointerAngle).x"
-      :cy="getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y"
-      :rx="40"
+    <ellipse id="pointerLine"
+             :style="{
+               '--cx': `${getArcPoint(radius, 0, uiStore.wheelPointerAngle).x}px`,
+               '--cy': `${getArcPoint(radius, 0, uiStore.wheelPointerAngle).y}px`,
+               'transform': `rotate(${uiStore.wheelPointerAngle - 90}deg)`
+             }"
+             :rx="40"
       :ry="400"
       fill="url(#lineGradient)"
       filter="url(#exposureFilter) url(#blurPointerFilter)"
-      :transform="`rotate(${uiStore.wheelPointerAngle - 90}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).x}, ${getArcPoint(radius, 0,  uiStore.wheelPointerAngle).y})`"
     />
   </svg>
   <div v-for="(item, index) in menuItems" :key="index" class="list-item" :style="menuItemStyle(index)" :class="{ selectedItem: isSelectedItem(index) }">
@@ -156,6 +160,14 @@ export default defineComponent({
 .list-item.selectedItem {
   font-weight: bold;
   transition: font-weight 0.5s ease-in-out;
+}
+
+/* Add transition and transformation effects */
+#pointerDot, #pointerLine {
+  transition: all 300ms ease;
+  transform-origin: var(--cx) var(--cy);
+  cx: var(--cx);
+  cy: var(--cy);
 }
 
 .slide-up-enter-active,

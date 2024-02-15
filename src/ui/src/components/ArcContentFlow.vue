@@ -50,13 +50,13 @@ watch(() => uiStore.topWheelPosition, (newVal) => {
     if (state.scrollPosition <= totalSpan - 1) {
       state.isScrolling = true;
       state.scrollPosition += props.angleStep;
-      setTimeout(() => state.isScrolling = false, 100);
+      setTimeout(() => state.isScrolling = false, 200);
     }
   } else if (newVal < 0) {
     if (state.scrollPosition >= 0) {
       state.isScrolling = true;
       state.scrollPosition -= props.angleStep;
-      setTimeout(() => state.isScrolling = false, 100);
+      setTimeout(() => state.isScrolling = false, 200);
     }
   }
 
@@ -87,7 +87,7 @@ onUnmounted(() => {
   <div>
     <svg style="height:0; width:0; position:absolute;">
       <filter id="motionBlur">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="0 2" />
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0 10" />
       </filter>
     </svg>
     <div v-for="(slot, index) in slots" :key="index" class="list-item" :style="itemStyle(index)"
@@ -106,7 +106,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: right;
   align-items: center;
-  transition: filter 100ms ease-in-out;
+  transition: filter 200ms ease;
 }
 
 .list-item.selectedItem {
@@ -114,5 +114,18 @@ onUnmounted(() => {
 }
 .list-item.scrolling:not(.selectedItem) {
   filter: url(#motionBlur);
+}
+
+/* Add transition and transformation effects */
+.list-item {
+  transition: all 0.5s ease;
+  transform-origin: center;
+}
+
+/* Style for the SVG filter */
+svg {
+  position: absolute;
+  width: 0;
+  height: 0;
 }
 </style>
