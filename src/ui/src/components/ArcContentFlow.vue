@@ -118,7 +118,7 @@ onUnmounted(() => {
 
 /* Add transition and transformation effects */
 .list-item {
-  transition: all 0.5s ease;
+  transition: all 200ms ease;
   transform-origin: center;
 }
 

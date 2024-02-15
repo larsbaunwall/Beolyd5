@@ -164,7 +164,7 @@ export default defineComponent({
 
 /* Add transition and transformation effects */
 #pointerDot, #pointerLine {
-  transition: all 300ms ease;
+  transition: all 100ms ease;
   transform-origin: var(--cx) var(--cy);
   cx: var(--cx);
   cy: var(--cy);
