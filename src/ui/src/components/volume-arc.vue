@@ -2,8 +2,8 @@
     <svg width="1024" height="768" style="position: absolute; z-index: 90; opacity: 0.5;">
         <defs>
             <linearGradient id="gradient">
-                <stop offset="5%" stop-color="rgba(102,153,255,1)" />
-                <stop offset="95%" stop-color="rgba(102,153,204,1)" />
+                <stop offset="5%" stop-color="rgba(102,153,255,0.3)" />
+                <stop offset="95%" stop-color="rgba(102,153,204,0.3)" />
             </linearGradient>
         </defs>
         <!-- Arc path for reference -->
