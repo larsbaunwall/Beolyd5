@@ -1,5 +1,5 @@
-<template>  
-  <BS5DebugOverlay />
+<template>
+  <div class="container">
   <MainCircleArc :radius="radius"/>
   <ArcContentFlow :radius=300>
     <template v-slot:0>
@@ -71,6 +71,7 @@
   <div v-for="(item, index) in menuItems" :key="index" class="list-item" :style="menuItemStyle(index)" :class="{ selectedItem: isSelectedItem(index) }">
     {{ item.title }}
   </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -86,7 +87,7 @@ import ArcContentFlow from './ArcContentFlow.vue';
 export default defineComponent({
   name: 'BS5Shell',
   components: {
-    BS5DebugOverlay, MainCircleArc, VolumeArc, ArcContentFlow
+    MainCircleArc, VolumeArc, ArcContentFlow
   },
   setup() {
     const router = useRouter();
@@ -146,6 +147,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.container {
+  background-color: black;
+  width:100%;
+  height: 1000px;
+}
+
 .list-item {
   z-index: 1000;
   font-weight: 100;

@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import BS5Shell from "./components/bs5-shell.vue";
 </script>
 
 <template>
   <div class="container">
-    <BS5Shell />
+    <router-view v-slot="{ Component }">
+      <transition name="slide-up" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 

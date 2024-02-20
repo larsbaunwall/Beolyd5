@@ -13,18 +13,25 @@ import RadioView from "./components/radio.vue";
 import { listen } from "@tauri-apps/api/event";
 import { useUIStore } from "./stores/ui";
 import { translateToRange } from "./utils/arcs";
+import FakeDevice from "./views/FakeDevice.vue";
+import Bs5Shell from "./components/bs5-shell.vue";
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
             path: "/",
+            component: Bs5Shell,
             children: [ 
                 {path: '', component: DefaultView, meta: {title: 'HOME'}},
                 {path: 'music', component: MusicView, meta: {title: 'N.MUSIC'}},
                 {path: 'radio', component: RadioView, meta: {title: 'N.RADIO'}},
             ],
         },
+        {
+            path: "/debug",
+            component: FakeDevice,
+        }
     ],
 });
 
