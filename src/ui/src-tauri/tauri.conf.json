@@ -2,7 +2,7 @@
   "build": {
     "beforeDevCommand": "yarn dev",
     "beforeBuildCommand": "yarn build",
-    "devPath": "http://localhost:1421",
+    "devPath": "http://localhost:1421/Beolyd5/",
     "distDir": "../dist"
   },
   "package": {

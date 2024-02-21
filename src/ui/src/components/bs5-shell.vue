@@ -127,7 +127,7 @@ export default defineComponent({
       if (diff <= 1) {
         this.uiStore.tick();
 
-        this.router.push({ path: this.menuItems[index].path, params: { shell: this.$route.params.shell } });
+        this.router.push({ path: `/${this.$route.params.shell ?? 'default'}/${this.menuItems[index].path}` });
         return true;
       }
       return false;
