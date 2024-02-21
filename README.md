@@ -20,6 +20,9 @@
 
 # Beolyd5
 
+> [!TIP]
+> Try the new [online device simulator](https://larsbaunwall.github.io/Beolyd5/#/sim) just launched. Follow the progress as the UI matures :sparkles:
+
 Back in the day, I absolutely adored the [BeoSound 5](https://beo.zone/en/beosound-5), which I thought was a very beautifully designed item for the home - alongside being a sound system.
 
 Unfortunately, Bang & Olufsen made a number of unfortunate choices, not preparing the product for future software updates. This has left the Windows XP-based system in the past, unable to provide modern streaming services or the like.
