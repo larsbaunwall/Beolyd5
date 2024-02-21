@@ -77,11 +77,11 @@
 <script lang="ts">
 import {CSSProperties, defineComponent} from 'vue';
 import { useRouter } from 'vue-router';
-import { useUIStore } from '../stores/ui';
-import arcs from '../utils/arcs';
-import MainCircleArc from './main-circle-arc.vue';
-import VolumeArc from './volume-arc.vue';
-import ArcContentFlow from './ArcContentFlow.vue';
+import { useUIStore } from '../stores/ui.ts';
+import arcs from '../utils/arcs.ts';
+import MainCircleArc from '../components/main-circle-arc.vue';
+import VolumeArc from '../components/volume-arc.vue';
+import ArcContentFlow from '../components/ArcContentFlow.vue';
 
 export default defineComponent({
   name: 'BS5Shell',
@@ -96,7 +96,7 @@ export default defineComponent({
   },
   data() {
     return {
-      menuItems: [{title: 'SETTINGS', path: '/'}, {title: 'SOURCES', path: '/'}, {title: 'N.RADIO', path: 'radio'}, {title: 'N.MUSIC', path: 'music'} ],
+      menuItems: [{title: 'SETTINGS', path: ''}, {title: 'SOURCES', path: ''}, {title: 'N.RADIO', path: 'radio'}, {title: 'N.MUSIC', path: 'music'} ],
       radius: 1000, // Adjusted radius to fit within the viewport
       angleStep: 7, // Adjust this value to change the spacing between menu items
     };
@@ -151,6 +151,8 @@ export default defineComponent({
   background-color: black;
   width:100%;
   height: 1000px;
+  cursor: none;
+  overflow: hidden;
 }
 
 .list-item {

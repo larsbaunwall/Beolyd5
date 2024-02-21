@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 </script>
 
 <template>
@@ -12,5 +13,7 @@
 </template>
 
 <style scoped>
-
+.container {
+  overflow: hidden;
+}
 </style>

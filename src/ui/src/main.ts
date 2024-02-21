@@ -14,8 +14,8 @@ import { listen } from "@tauri-apps/api/event";
 import { useUIStore } from "./stores/ui";
 import { translateToRange } from "./utils/arcs";
 import DeviceSim from "./views/DeviceSimulator.vue";
-import Bs5Shell from "./components/bs5-shell.vue";
-import Shell from "./components/Shell.vue";
+import Bs5Shell from "./views/bs5.vue";
+import Shell from "./views/Shell.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -27,9 +27,9 @@ const router = createRouter({
                 const shell = route.params.shell;
 
                 if(shell === 'sim') {
-                    return { component: DeviceSim };
+                    return { component: DeviceSim, shell: 'sim' };
                 } else {
-                    return { component: Bs5Shell };
+                    return { component: Bs5Shell, shell: 'default' };
                 }
             },
             children: [ 
