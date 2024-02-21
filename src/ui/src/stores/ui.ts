@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import { invoke } from "@tauri-apps/api";
+//import { invoke } from "@tauri-apps/api";
 
 export const useUIStore = defineStore('ui', () => {
   const volume = ref(50);

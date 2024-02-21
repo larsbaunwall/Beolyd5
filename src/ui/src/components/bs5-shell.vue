@@ -75,11 +75,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {CSSProperties, defineComponent} from 'vue';
 import { useRouter } from 'vue-router';
 import { useUIStore } from '../stores/ui';
 import arcs from '../utils/arcs';
-import BS5DebugOverlay from './debug-overlay.vue';
 import MainCircleArc from './main-circle-arc.vue';
 import VolumeArc from './volume-arc.vue';
 import ArcContentFlow from './ArcContentFlow.vue';
@@ -97,7 +96,7 @@ export default defineComponent({
   },
   data() {
     return {
-      menuItems: [{title: 'SETTINGS', path: '/'}, {title: 'SOURCES', path: '/'}, {title: 'N.RADIO', path: '/radio'}, {title: 'N.MUSIC', path: '/music'} ],
+      menuItems: [{title: 'SETTINGS', path: '/'}, {title: 'SOURCES', path: '/'}, {title: 'N.RADIO', path: 'radio'}, {title: 'N.MUSIC', path: 'music'} ],
       radius: 1000, // Adjusted radius to fit within the viewport
       angleStep: 7, // Adjust this value to change the spacing between menu items
     };
@@ -109,7 +108,7 @@ export default defineComponent({
     },
   },
   methods: {
-    menuItemStyle(index: number) {
+    menuItemStyle(index: number) :CSSProperties {
       const itemAngle = this.startItemAngle + index * this.angleStep;
       const position = this.getArcPoint(this.radius, 20, itemAngle);
       const divWidth = 100;
@@ -127,7 +126,8 @@ export default defineComponent({
       const diff = Math.abs(this.uiStore.wheelPointerAngle - itemAngle);
       if (diff <= 1) {
         this.uiStore.tick();
-        this.router.push(this.menuItems[index].path);
+
+        this.router.push({ path: this.menuItems[index].path, params: { shell: this.$route.params.shell } });
         return true;
       }
       return false;

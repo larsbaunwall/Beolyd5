@@ -13,25 +13,31 @@ import RadioView from "./components/radio.vue";
 import { listen } from "@tauri-apps/api/event";
 import { useUIStore } from "./stores/ui";
 import { translateToRange } from "./utils/arcs";
-import FakeDevice from "./views/FakeDevice.vue";
+import DeviceSim from "./views/DeviceSimulator.vue";
 import Bs5Shell from "./components/bs5-shell.vue";
+import Shell from "./components/Shell.vue";
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
-            path: "/",
-            component: Bs5Shell,
+            path: "/:shell?",
+            component: Shell,
+            props: route => {
+                const shell = route.params.shell;
+
+                if(shell === 'sim') {
+                    return { component: DeviceSim };
+                } else {
+                    return { component: Bs5Shell };
+                }
+            },
             children: [ 
-                {path: '', component: DefaultView, meta: {title: 'HOME'}},
-                {path: 'music', component: MusicView, meta: {title: 'N.MUSIC'}},
-                {path: 'radio', component: RadioView, meta: {title: 'N.RADIO'}},
+                {path: '', component: DefaultView, meta: {title: 'HOME'}, props: true},
+                {path: 'music', component: MusicView, meta: {title: 'N.MUSIC'}, props: true},
+                {path: 'radio', component: RadioView, meta: {title: 'N.RADIO'}, props: true},
             ],
         },
-        {
-            path: "/debug",
-            component: FakeDevice,
-        }
     ],
 });
 
@@ -44,9 +50,16 @@ createApp(App)
 
 const uiStore = useUIStore();
 
-const wheelEvents = new Subject();
+interface WheelEvent {
+    payload: {
+        position: number;
+        wheel: string;
+    };
+}
 
-const unlisten = listen('wheelEvent', (event) => {
+const wheelEvents = new Subject<WheelEvent>();
+
+const unlisten = listen('wheelEvent', (event:WheelEvent) => {
     wheelEvents.next(event);
 });
 
@@ -55,7 +68,6 @@ const diags = listen('diagnostics', (event) => {
 });
 
 const wheelSub$ = wheelEvents.subscribe((event) => {
-    console.log({event});
     if(event.payload.wheel == 'Angular') {
         uiStore.wheelPointerAngle = translateToRange(event.payload.position, 152, 195);
     }

@@ -6,8 +6,8 @@ import BS5DebugOverlay from "../components/debug-overlay.vue";
 <template>
   <svg class="circle-svg">
     <circle cx="1247" cy="487" r="240" fill="lightgray" />
-    <line x1="1017" y1="437" x2="1477" y2="437" stroke="black" /> <!-- Adjusted this line -->
-    <line x1="1017" y1="537" x2="1477" y2="537" stroke="black" /> <!-- Adjusted this line -->
+    <line x1="1017" y1="437" x2="1477" y2="437" stroke="gray" /> <!-- Adjusted this line -->
+    <line x1="1017" y1="537" x2="1477" y2="537" stroke="gray" /> <!-- Adjusted this line -->
   </svg>
   <div class="controls">
     <button class="middle-button"><</button> <!-- Add this line -->

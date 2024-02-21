@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import arcs from "../utils/arcs.ts";
-import {useSlots, watch, onMounted, onUnmounted, reactive} from "vue";
+import {useSlots, watch, onMounted, onUnmounted, reactive, CSSProperties} from "vue";
 import { useUIStore } from "../stores/ui.ts";
 
 const props = withDefaults(defineProps<{
@@ -22,7 +22,7 @@ function startItemAngle(): number {
   return 180 - totalSpan / 2;
 }
 
-function itemStyle(index: number) {
+function itemStyle(index: number) : CSSProperties {
   const itemAngle = startItemAngle() + index * props.angleStep - state.scrollPosition;
   const position = arcs.getArcPoint(props.radius, 20, itemAngle);
   return {
@@ -63,7 +63,7 @@ watch(() => uiStore.topWheelPosition, (newVal) => {
   uiStore.topWheelPosition = 0;
 });
 
-const handleKeyDown = (event) => {
+const handleKeyDown = (event:KeyboardEvent) => {
   switch (event.key) {
     case "ArrowDown":
       uiStore.topWheelPosition = 1;
@@ -90,8 +90,8 @@ onUnmounted(() => {
         <feGaussianBlur in="SourceGraphic" stdDeviation="0 10" />
       </filter>
     </svg>
-    <div v-for="(slot, index) in slots" :key="index" class="list-item" :style="itemStyle(index)"
-         :class="{ selectedItem: isSelectedItem(index), scrolling: state.isScrolling }">
+    <div v-for="(_, index) in slots" :key="index" class="list-item" :style="itemStyle(Number(index))"
+         :class="{ selectedItem: isSelectedItem(Number(index)), scrolling: state.isScrolling }">
       <slot :name="`${index}`"></slot>
     </div>
   </div>
