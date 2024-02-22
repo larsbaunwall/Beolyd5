@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import Bs5Shell from "./bs5.vue";
+import MainMenuShell from "./MainMenuShell.vue";
 import { onMounted, onUnmounted, computed } from 'vue';
 
 const props = defineProps({
   component: {
     type: Object,
-    default: () => Bs5Shell,
+    default: () => MainMenuShell,
   },
   shell: {
     type: String,

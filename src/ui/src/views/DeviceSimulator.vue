@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BS5Shell from "./bs5.vue";
+import BS5Shell from "./MainMenuShell.vue";
 import {useUIStore} from "../stores/ui.ts";
 
 const uiStore = useUIStore();

@@ -7,14 +7,14 @@ import App from "./App.vue";
 
 import {Subject, filter, bufferCount} from "rxjs";
 
-import DefaultView from "./components/default.vue";
-import MusicView from "./components/music.vue";
-import RadioView from "./components/radio.vue";
+import DefaultView from "./components/Default.vue";
+import MusicView from "./views/Music.vue";
+import RadioView from "./views/Radio.vue";
 import { listen } from "@tauri-apps/api/event";
 import { useUIStore } from "./stores/ui";
 import { translateToRange } from "./utils/arcs";
 import DeviceSim from "./views/DeviceSimulator.vue";
-import Bs5Shell from "./views/bs5.vue";
+import MainMenuShell from "./views/MainMenuShell.vue";
 import Shell from "./views/Shell.vue";
 
 const router = createRouter({
@@ -29,7 +29,7 @@ const router = createRouter({
                 if(shell === 'sim') {
                     return { component: DeviceSim, shell: 'sim' };
                 } else {
-                    return { component: Bs5Shell, shell: 'default' };
+                    return { component: MainMenuShell, shell: 'default' };
                 }
             },
             children: [ 
