@@ -45,10 +45,10 @@ const uiStore = useUIStore();
 const route = useRoute();
 
 const menuItems = ref([
-  {title: 'SETTINGS', path: ''},
-  {title: 'SOURCES', path: ''},
-  {title: 'N.RADIO', path: 'radio'},
-  {title: 'N.MUSIC', path: 'music'}
+  {title: 'SETTINGS', path: 'menu'},
+  {title: 'SOURCES', path: 'menu'},
+  {title: 'N.RADIO', path: 'menu/radio'},
+  {title: 'N.MUSIC', path: 'menu/music'}
 ]);
 const radius = ref(1000);
 const angleStep = ref(7);
