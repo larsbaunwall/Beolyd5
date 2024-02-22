@@ -9,6 +9,7 @@ export interface WheelEvent {
         wheel: string;
     };
 }
+
 export const startHardwareBridge = () => {
 
     const uiStore = useUIStore();
@@ -16,6 +17,9 @@ export const startHardwareBridge = () => {
     const diagnostics$ = new Subject<any>();
     const frontWheelEvents$ = allWheelEvents$.pipe(
         filter(event => event.payload.wheel === 'Front')
+    ).pipe(bufferCount(10));
+    const backWheelEvents$ = allWheelEvents$.pipe(
+        filter(event => event.payload.wheel === 'Back')
     ).pipe(bufferCount(10));
 
     const unlisten = listen('wheelEvent', (event: WheelEvent) => {
@@ -30,15 +34,17 @@ export const startHardwareBridge = () => {
         if (event.payload.wheel == 'Angular') {
             uiStore.wheelPointerAngle = arcs.translateToRange(event.payload.position, 152, 195);
         }
-        if (event.payload.wheel == 'Back') {
-            let newVolume = uiStore.volume + wheelSpinDifference(event.payload.position);
-            uiStore.volume = Math.max(0, Math.min(newVolume, 100));
-        }
     });
 
     frontWheelEvents$.subscribe((events) => {
         const event = events[events.length - 1];
         uiStore.topWheelPosition = wheelSpinDifference(event.payload.position);
+    });
+
+    backWheelEvents$.subscribe((events) => {
+        const event = events[events.length - 1];
+        let newVolume = uiStore.volume + wheelSpinDifference(event.payload.position);
+        uiStore.volume = Math.max(0, Math.min(newVolume, 100));
     });
 
     return {wheelEvents: allWheelEvents$, diagnostics: diagnostics$};
