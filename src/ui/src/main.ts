@@ -15,4 +15,4 @@ createApp(App)
     .use(createRoutes)
     .mount("#app");
 
-const subscription = startHardwareBridge();
+startHardwareBridge();

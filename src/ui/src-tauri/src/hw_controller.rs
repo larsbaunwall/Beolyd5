@@ -36,7 +36,7 @@ impl HWController {
             controller_clone.lock().unwrap().register_wheel_event_callback(Arc::new(Mutex::new(move |(wheel, pos): (Wheel, u8)| {
                 let payload = HardwareEvent {
                     kind: "wheel".to_string(),
-                    source: wheel.,
+                    source: wheel.to_string(),
                     value: pos,
                 };
     
@@ -49,7 +49,7 @@ impl HWController {
             controller_clone.lock().unwrap().register_button_event_callback(Arc::new(Mutex::new(move |button: Button| {
                 let payload = HardwareEvent {
                     kind: "button".to_string(),
-                    source: button,
+                    source: button.to_string(),
                     value: 0
                 };
     

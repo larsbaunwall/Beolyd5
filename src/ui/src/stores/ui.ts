@@ -16,5 +16,9 @@ export const useUIStore = defineStore('ui', () => {
     //invoke('tick');
   }
 
-  return {hardwareEvents, volume, wheelPointerAngle, topWheelPosition, isNowPLayingOverlayActive, tick}
+  const nextHardwareEvent = (event: HardwareEvent) => {
+    hardwareEvents.next(event);
+  }
+
+  return {hardwareEvents, volume, wheelPointerAngle, topWheelPosition, isNowPLayingOverlayActive, tick, nextHardwareEvent}
 })

@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import MainMenuShell from "./MainMenu.vue";
 import {useUIStore} from "../stores/ui.ts";
 import FullscreenContainer from "./FullscreenContainer.vue";
+import {Wheel} from "../hardware/events.ts";
 
 const uiStore = useUIStore();
+
+const handleAngularWheelChange = e => {
+  console.log('Wheel change', e.target.value);
+  uiStore.nextHardwareEvent({payload: {kind: 'wheel', source: Wheel.Angular, value: e.target.value}})
+};
 </script>
 
 <template>
@@ -32,8 +37,8 @@ const uiStore = useUIStore();
           </div>
           <div>
             <input
-                type="range" min="150" max="210" step="0.1"
-                v-model="uiStore.wheelPointerAngle"/>
+                type="range" value="60" min="0" max="120" step="0.1"
+                @input="handleAngularWheelChange"/>
           </div>
           <div>
             <input type="range" min="0" max="100"

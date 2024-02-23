@@ -35,8 +35,13 @@ export const cx: number = 1147;
 export const cy: number = 387;
 
 /** Translate a value [min;max] to a number 0-100 relative for that range */
-export function translateToRange(input: number, min: number, max: number): number {
-    return (input * (max - min)) / 100 + min;
+export function translateToNormalizedRange(input: number, min: number, max: number): number {
+    return translateToRange(input, min, max, 0, 100);
+}
+
+/** Translate a value [min;max] to a number in another range [min;max] relative for that range */
+function translateToRange(input: number, fromMin: number, fromMax: number, toMin: number, toMax: number): number {
+    return ((input - fromMin) * (toMax - toMin) / (fromMax - fromMin)) + toMin;
 }
 
 /** Get the (x,y) point on the arc (+padding) at a given angle */
