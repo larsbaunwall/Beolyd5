@@ -34,20 +34,23 @@ impl HWController {
         tauri::async_runtime::spawn(async move {
             let app_handle_clone = app_handle.clone();
             controller_clone.lock().unwrap().register_wheel_event_callback(Arc::new(Mutex::new(move |(wheel, pos): (Wheel, u8)| {
-                let payload = WheelEvent {
-                    wheel,
-                    position: pos,
+                let payload = HardwareEvent {
+                    kind: "wheel".to_string(),
+                    source: wheel.,
+                    value: pos,
                 };
     
-                app_handle_clone.emit_all("wheelEvent", Some(payload)).unwrap();
+                app_handle_clone.emit_all("hardwareEvent", Some(payload)).unwrap();
 
                 Ok(())
             })));
     
             let app_handle_clone = app_handle.clone();
             controller_clone.lock().unwrap().register_button_event_callback(Arc::new(Mutex::new(move |button: Button| {
-                let payload = ButtonEvent {
-                    button,
+                let payload = HardwareEvent {
+                    kind: "button".to_string(),
+                    source: button,
+                    value: 0
                 };
     
                 app_handle_clone.emit_all("buttonEvent", Some(payload)).unwrap();
@@ -86,6 +89,13 @@ impl HWController {
 #[derive(Clone, serde::Serialize)]
 struct ButtonEvent {
     button: Button,
+}
+
+#[derive(Clone, serde::Serialize)]
+struct HardwareEvent {
+    kind: String,
+    source: String,
+    value: u8,
 }
 
 #[derive(Clone, serde::Serialize)]

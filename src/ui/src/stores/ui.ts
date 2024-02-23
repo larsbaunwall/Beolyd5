@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import {Subject} from "rxjs";
+import {HardwareEvent} from "../hardware/events.ts";
 
 //import { invoke } from "@tauri-apps/api";
 
@@ -8,10 +10,11 @@ export const useUIStore = defineStore('ui', () => {
   const wheelPointerAngle = ref(180);
   const topWheelPosition = ref(0);
   const isNowPLayingOverlayActive = ref(false);
+  const hardwareEvents = new Subject<HardwareEvent>();
 
   const tick = () => {
     //invoke('tick');
   }
 
-  return {volume, wheelPointerAngle, topWheelPosition, isNowPLayingOverlayActive, tick}
+  return {hardwareEvents, volume, wheelPointerAngle, topWheelPosition, isNowPLayingOverlayActive, tick}
 })
