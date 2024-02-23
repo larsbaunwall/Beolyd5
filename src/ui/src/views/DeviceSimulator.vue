@@ -5,7 +5,7 @@ import {Wheel} from "../hardware/events.ts";
 
 const uiStore = useUIStore();
 
-const handleAngularWheelChange = (e: InputEvent) => {
+const handleAngularWheelChange = (e: Event) => {
   const val = Number((e.target as HTMLInputElement).value);
   uiStore.nextHardwareEvent({payload: {kind: 'wheel', source: Wheel.Angular, value: val}})
 };
