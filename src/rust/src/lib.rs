@@ -115,7 +115,17 @@ impl Beolyd5Controller {
     //uint8_t bar [2] = { 0xc0, 0x00 }; // turns on LED
     //uint8_t bar [2] = { 0x80, 0x00 }; // turns off screen, on LED
     //uint8_t bar [2] = { 0xd0, 0x00 }; //  blinking
-    fn send(&self, data: [u8; 2]) -> Result<(), Box<dyn Error>> {
+    
+    /// Sends a command to the device to turn on the LCD backlight or the LED.
+    /// Commands _could_ be:
+    /// - `[0x00, 0x00]` to turn off the LCD backlight and the LED
+    /// - `[0x40, 0x00]` to turn on the LCD backlight
+    /// - `[0xc0, 0x00]` to turn on the LED
+    /// - `[0x80, 0x00]` to turn off the LCD backlight and turn on the LED
+    /// - `[0xd0, 0x00]` to make the LED blink
+    /// - `[0x01, 0x00]` to make a click sound
+    /// Returns `Ok(())` if the command was sent successfully, or an `Err` if there was a problem sending the command.
+    pub fn send(&self, data: [u8; 2]) -> Result<(), Box<dyn Error>> {
         let device_clone = self.device.clone().ok_or_else(|| {
             Box::new(std::io::Error::new(
                 ErrorKind::NotFound,
