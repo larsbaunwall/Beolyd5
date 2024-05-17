@@ -33,11 +33,12 @@ fn main() {
 
         controller.lock().unwrap().register_button_event_callback(Arc::new(Mutex::new(move |button: Button| -> Result<(), Box<dyn Error + Send>>  {
             println!("   Received ButtonEvent: {:?}", button);
-
+/*
             if button != Button::None {
                 // Emit click sound
                 controller_clone.lock().unwrap().tick().unwrap();
             }
+            */
 
             Ok(())
         })));
@@ -49,8 +50,26 @@ fn main() {
         }
 
         // Keep the main thread alive to continue receiving events
+
         loop {
-            std::thread::sleep(std::time::Duration::from_millis(1));
+            println!("hell>>>o");
+            std::thread::sleep(std::time::Duration::from_millis(100));
+            //controller_clone.lock().unwrap().tick().unwrap();
+            for i in 0..0xff {
+                println!("i: {:08b}", i);
+                controller_clone.lock().unwrap().send([0, i]).unwrap(); //tick().unwrap();
+                std::thread::sleep(std::time::Duration::from_millis(10));
+            }
         }
     }).join().unwrap();
 }
+
+/*
+00000001 tick
+00000100 beep wahaou
+00000110 tock
+00000111 tuck
+00001011 doh!
+00001100 non-stop beep
+00001101 non-stop lighter beep
+*/

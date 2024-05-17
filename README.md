@@ -43,11 +43,29 @@ This is a very early version of the [new UI](src/ui):
 
 Currently, I am exploring how the rotary dial works over USB, trying to reverse engineer the protocol.
 
-Code for the Rotary controller (which is a USB HID device) can be found in `src/dotnet` and `src/rust`.
+Code for the Rotary controller (which is a USB HID device) can be found in 
+`src/dotnet` and `src/rust`. Alternatively, a linux kernel module that exports 
+the HID events into "good" ones (joysting with axis, buttons, etc) is available 
+at 
+[beosound5-kernel-module](https://github.com/Frankkkkk/beosound5-kernel-module).
 
-This work is greatly inspired and informed by [@toresby](https://github.com/toresbe)'s work on [neomaster](https://github.com/toresbe/neomaster).
+
+This work is greatly inspired and informed by 
+[@toresby](https://github.com/toresbe)'s work on 
+[neomaster](https://github.com/toresbe/neomaster).
 
 I am also looking into new hardware to replace the old Beomaster5, which I plan to replace with a Raspberry Pi with the [Hifiberry DAC2 HD](https://www.hifiberry.com/shop/boards/hifiberry-dac2-hd/) for audio.
+
+#### Beosound 5 power connection
+
+The pinout for the mini-DIN 4 power connection is (view from port):
+![beo5 power connector. 1:GND, 2:+5V standy, 3: +12V](beo5-power-conn.png)
+
+Please note that mini-HDMI and USB need to be plugged in for the screen to power 
+on.
+The beosound 5 does not export EDID information, so the screen caracteristics 
+need to be set beforehand. For unknown reasons, it works out of box on 
+RaspberryPis.
 
 ### The software
 
