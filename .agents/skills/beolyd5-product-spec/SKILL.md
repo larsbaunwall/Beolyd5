@@ -12,10 +12,9 @@ license: Apache-2.0
 
 # Beolyd5 product & specifications
 
-Drive development from specs, not vibes: agree **what** and **why** before **how**. Own the
-requirements so every feature is written down, testable, and traceable. The technical
-**how** belongs to `beolyd5-architecture`; visual/interaction detail to `beolyd5-ux-design`;
-this skill owns intent, scope, requirements, and acceptance.
+Own the requirements so every feature is written down, testable, and traceable. The
+technical **how** belongs to `beolyd5-architecture`; visual/interaction detail to
+`beolyd5-ux-design`; this skill owns intent, scope, requirements, and acceptance.
 
 ## Repo layout for specs
 

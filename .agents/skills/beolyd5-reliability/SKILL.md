@@ -13,11 +13,9 @@ license: Apache-2.0
 
 # Beolyd5 reliability, security & field operations
 
-A demo "works on the bench." An **appliance** survives abrupt power cuts, flaky Wi-Fi, SD
-wear, daemon hangs, and rare panics — unattended, inside a BeoSound cabinet, for years.
-This skill owns everything about behaviour **when conditions are not ideal**. It is distinct
-from `beolyd5-pi-image` (which owns *building/shipping* the image) — that skill wires the
-services; this one makes the running system fault-tolerant and secure.
+Owns behaviour **when conditions are not ideal**. Distinct from `beolyd5-pi-image` (builds/ships
+the image) — that skill wires the services; this one makes the running system fault-tolerant
+and secure.
 
 ## Power-loss safety & flash wear (do this first)
 

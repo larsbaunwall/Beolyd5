@@ -7,7 +7,7 @@ Context for Beolyd5: an open-source rebuild of the Bang & Olufsen **BeoSound 5**
 Repo has **two decoupled components** under `src/`:
 
 1. **`src/rust/`**: `beolyd5_controller` crate (USB-HID abstraction for the physical controller). Published Cargo package.
-2. **`src/ui/`**: Vue 3 frontend + **Tauri v1** (Rust) shell. The Tauri host bridges hardware events to the webview. Also runs as a browser-only simulator.
+2. **`src/ui/`**: Vue 3 frontend + **Tauri v2** (Rust) shell. The Tauri host bridges hardware events to the webview. Also runs as a browser-only simulator.
 
 > **CRITICAL**: `src/ui/src-tauri/Cargo.toml` points to the **published** `beolyd5_controller = "1.0.2"`, *not* local `src/rust/`. Local crate edits have no effect on the app without a `[patch]` directive.
 
@@ -22,10 +22,10 @@ Note: No `.NET`/`src/dotnet` files exist despite README mentions. Ignore MAUI to
 └─ src/
    ├─ rust/                  `beolyd5_controller` crate (standalone Cargo package)
    │  └─ bs5-controller/     STALE nested scaffold (build artifacts only). Do NOT edit.
-   └─ ui/                    Vue 3 frontend + Tauri v1 Rust host
+   └─ ui/                    Vue 3 frontend + Tauri v2 Rust host
       ├─ src/                Vue app (Pinia stores, RxJS hardware bridge, arc math)
-      ├─ src-tauri/          Tauri v1 setup (main.rs, hw_controller.rs)
-      └─ vite.config.ts      Dev server on port 1421, base path `/Beolyd5/`
+      ├─ src-tauri/          Tauri v2 setup (main.rs, hw_controller.rs)
+      └─ vite.config.ts      Dev server on port 1421, base `/` in Tauri, `/Beolyd5/` for GH Pages
 ```
 
 ## Setup & build
@@ -63,9 +63,9 @@ cargo run --example listen  # Needs physical device + udev rules
 
 - **`<script setup>` only.** State via **Pinia**, events via **RxJS**.
 - **Vue Router** uses `createWebHashHistory` (required for GH pages).
-- **TypeScript `strict: true`**. Fix errors to pass `npm run build`.
+- **TypeScript `strict: true`** + `noUnusedLocals/Parameters: true`. Fix errors to pass `npm run build`.
 - Local imports use explicit `.ts` extensions (`allowImportingTsExtensions: true`). Match this.
-- Guard Tauri calls (`invoke`) so the browser **simulator** does not throw.
+- Guard Tauri calls with `isTauri()` from `@tauri-apps/api/core` so the browser **simulator** does not throw. Do **not** use `window.__TAURI__` — unreliable in Tauri v2.
 
 ## CI & Deployment
 
@@ -74,8 +74,8 @@ cargo run --example listen  # Needs physical device + udev rules
 
 ## Gotchas
 
-- **Package manager split:** CI / README use `npm` (default to this). `tauri.conf.json` invokes `yarn`. Both lockfiles exist.
-- **WebKitGTK versions:** `raspberry-os-prereqs.sh` uses 4.1; CI uses 4.0-dev.
-- **`tick()` disabled:** `src/ui/src/stores/ui.ts` has `invoke('tick')` commented out.
-- **`buttonEvent` dead code:** Rust emits it, but `events.ts` filters buttons through `hardwareEvent` and drops `buttonEvent`.
+- **Package manager: npm-only.** `yarn.lock` has been removed. Use `npm install` everywhere.
+- **WebKitGTK versions:** `raspberry-os-prereqs.sh` uses 4.1; CI uses `libwebkit2gtk-4.1-dev` (Tauri 2 requirement).
+- **`tick()` active:** `src/ui/src/stores/ui.ts` calls `invoke('tick')` guarded by `isTauri()`.
+- **Unified hardware events:** Rust emits **all** HW events (wheel and button) on `"hardwareEvent"`. There is no separate `buttonEvent`. Add button handling by filtering `kind === 'button'` in `events.ts`.
 - **Linux HID access:** needs udev rule for `0cd4:1112` or `HidApi::open` throws "BS5 controller not found".

@@ -13,13 +13,13 @@ license: Apache-2.0
 
 # Beolyd5 system architecture
 
-You own the **whole**, not the parts. Each other skill owns a component; you own the
-**contracts and data flow between them**. A Beolyd5 device is a distributed system in
-miniature — a kiosk UI, a HID daemon, an MPRIS broker, and several audio daemons — so
-architectural clarity is what makes it debuggable and safely upgradeable.
+Own the **contracts and data flow between components**, not the components themselves.
+A Beolyd5 device is a distributed system in miniature — a kiosk UI, a HID daemon, an MPRIS
+broker, and several audio daemons — so clarity here makes it debuggable and safely
+upgradeable.
 
 Component experts: `beolyd5-rust-controller`, `beolyd5-tauri-app`, `beolyd5-audio-backend`,
-`beosound5-hardware`. Field-robustness of this topology: `beolyd5-reliability`.
+`beosound5-hardware`. Field-robustness: `beolyd5-reliability`.
 
 ## The one rule: control surface, not audio engine
 
@@ -59,8 +59,7 @@ contract between independently-failing peers. Design each boundary explicitly:
 
 1. **HID → UI bridge (Tauri events).** Today: `hardwareEvent { kind, source, value }`
    (see `beolyd5-tauri-app` for the live schema). Treat the payload shape as a versioned
-   interface: additive fields only; never repurpose `kind`/`source` meanings. The `buttonEvent`
-   emission is legacy/dead — consolidate on `hardwareEvent` rather than adding parallel channels.
+   interface: additive fields only; never repurpose `kind`/`source` meanings.
 2. **Playback ↔ UI (MPRIS over D-Bus).** MPRIS is already a formal D-Bus contract
    (`org.mpris.MediaPlayer2.Player`). Define **one normalized model** the broker exposes to
    the UI — `NowPlaying { title, artist, album, artUrl, status, position }` and a
@@ -113,6 +112,3 @@ The interaction grammar and the contracts are the product; protect them as you g
 - Don't let the UI become authoritative for playback state — it is a view; the broker/daemons
   are the source of truth.
 - Don't add a second input channel parallel to `hardwareEvent`; extend the one contract.
-- Don't split tightly-coupled logic across processes for its own sake — IPC is orders of
-  magnitude costlier than an in-process call; cross a boundary only when ownership/restart
-  isolation justifies it.

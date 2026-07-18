@@ -24,14 +24,9 @@ rootfs, watchdogs, hardening, network resilience) is owned by `beolyd5-reliabili
 ## Decision: pi-gen, not HifiBerryOS
 
 - **Do NOT fork HifiBerryOS / Beocreate.** It assumes a phone-as-remote, headless-renderer
-  model with its own init/webserver/UI. Embedding a display-driven kiosk means fighting
-  those assumptions and creating an un-upstreamable fork.
-- **Use [pi-gen](https://github.com/RPi-Distro/pi-gen)** — the tool the Raspberry Pi
-  Foundation uses to build Pi OS. Output is a standard flashable image; it's just shell
-  stages layered on Pi OS **Lite** (64-bit). You own it end-to-end. Reuse HifiBerry's
-  *ideas* (MPD, librespot, shairport-sync) without their image.
-- Buildroot/Yocto are overkill for this project; only revisit if you need a
-  sub-10-second, read-only, minimal appliance later.
+  model; embedding a display-driven kiosk means fighting those assumptions.
+- **Use [pi-gen](https://github.com/RPi-Distro/pi-gen)** — standard flashable image from
+  Pi OS **Lite** (64-bit), layered shell stages. You own it end-to-end.
 
 ## Image stage structure
 
@@ -165,9 +160,9 @@ Pick based on maturity:
 
 ## First-boot experience
 
-A `stage-config` first-boot service should collect Wi-Fi credentials and Spotify login
-(driven by the rotary dial where possible), write `/etc/beolyd5.conf`, then hand off to
-`beolyd5-ui.service`. Keep it minimal — flash, boot, works.
+A `stage-config` first-boot service collects Wi-Fi credentials and Spotify login
+(driven by the rotary dial where possible), writes `/etc/beolyd5.conf`, then hands off to
+`beolyd5-ui.service`. Keep credentials out of the image — collect them at runtime.
 
 ## Gotchas
 

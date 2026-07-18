@@ -12,10 +12,9 @@ license: Apache-2.0
 
 # Beolyd5 testing & verification
 
-Prove behaviour against the specs (`beolyd5-product-spec`) without needing the physical
-BeoSound 5 attached. The project currently has **no automated tests** and depends on
-hardware and daemons — so the core discipline is isolating pure logic and simulating the
-edges (HID, D-Bus) rather than requiring the real rig.
+Prove behaviour against specs (`beolyd5-product-spec`) without the physical BS5 attached.
+The project currently has **no automated tests** and depends on hardware and daemons —
+isolate pure logic and simulate the edges (HID, D-Bus) rather than requiring the real rig.
 
 ## Current gate (verified)
 
@@ -44,8 +43,9 @@ UI test harness:
   (the same entry point the Tauri bridge uses) — assert store/Pinia state and rendered DOM.
 - Assert the input mappings hold: back wheel → volume (clamped 0–100), front wheel → list
   scroll, angular wheel → `wheelPointerAngle`; verify the 256-wrap via `wheelSpinDifference`.
-- Guard: `invoke`/Tauri calls must no-op in the browser (`window.__TAURI__` absent) — a test
-  that triggers `tick()` must not throw in the simulator.
+- Guard: `invoke`/Tauri calls must no-op in the browser — `tick()` in the store is
+  already guarded by `isTauri()` from `@tauri-apps/api/core`, so tests run in the
+  simulator without throwing.
 - A component/DOM test runner (e.g. Vitest + Vue Test Utils) fits the Vite stack; keep tests
   driving the store, not reaching into Tauri.
 

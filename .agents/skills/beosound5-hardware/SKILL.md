@@ -12,9 +12,9 @@ license: Apache-2.0
 
 # BeoSound 5 hardware & domain reference
 
-This skill is the source of truth for facts an agent cannot infer about the BeoSound 5
-(BS5) and the Beolyd5 rebuild. Load it before touching the HID protocol, the physical
-signal path, or any code that tries to reproduce original BS5 behaviour.
+Source of truth for facts an agent cannot infer about the BS5 and the Beolyd5 rebuild.
+Load before touching the HID protocol, the physical signal path, or any code reproducing
+original BS5 behaviour.
 
 ## Product architecture (this is why the project exists)
 

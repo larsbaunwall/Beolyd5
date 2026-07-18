@@ -12,17 +12,16 @@ license: Apache-2.0
 
 # Beolyd5 audio backend
 
-Beolyd5's Tauri UI is a **control surface**; this skill defines the playback engine it
-controls — the software replacement for the legacy BeoMaster 5. The rule: the UI never
-decodes or streams audio; daemons do playback, the UI observes and commands. (The
-system-wide contract & broker ownership are owned by `beolyd5-architecture`.)
+Defines the playback engine the Tauri UI controls — the software replacement for the
+legacy BeoMaster 5. Daemons do playback; the UI observes and commands. System-wide
+broker-ownership contract: `beolyd5-architecture`.
 
 Related: `beolyd5-tauri-app` (the client), `beolyd5-pi-image` (bakes these daemons into
 `stage-audio`), `beosound5-hardware` (DAC2 HD / PowerLink output path, n.Music MOTS UX).
 
 ## Daemon stack (defaults)
 
-Run these as systemd services on Pi OS Lite, all outputting to the HiFiBerry DAC2 HD
+Run as systemd services on Pi OS Lite, all outputting to the HiFiBerry DAC2 HD
 (ALSA device `hw:0` after `dtoverlay=hifiberry-dacplushd`):
 
 | Concern | Default daemon | Notes |
@@ -99,11 +98,9 @@ write to config at runtime.
 
 - All daemons must target the **same ALSA device** (the DAC2 HD); leaving onboard audio
   enabled or misrouting outputs is the usual "no sound" cause.
-- shairport-sync's metadata / D-Bus / MPRIS interfaces are **build-time options** — a
+- shairport-sync metadata / D-Bus / MPRIS interfaces are **build-time options** — a
   stock package may omit them. Verify (or build with them enabled) before relying on them.
 - Spotify Connect and AirPlay each grab exclusive audio; coordinate so switching sources
   pauses the others (drive this through the MPRIS broker).
 - MPD needs the library indexed (`mpc update`) before browsing works.
 - Web radio = just URLs in MPD playlists — no extra daemon needed.
-- Keep playback **out of the webview**; if you find yourself decoding audio in JS/Rust UI
-  code, stop — that logic belongs in a daemon.

@@ -32,9 +32,6 @@ and *how it should look and feel*.
 - **Authenticity & hardware/software unity.** The aluminium wheel is a real instrument;
   on-screen motion must feel like *direct manipulation of it*, not abstract commands sent
   to a database. Design physical affordance and pixels as one.
-- **A touch of magic + longevity.** One or two moments of choreographed delight (a pointer
-  sweep, a cover gliding into place). Avoid trend-driven motifs that date; choose timeless
-  geometry and type so the UI still feels right in a decade.
 
 ## Interaction model — the arc, the pointer, the wheel
 
@@ -123,13 +120,3 @@ weather, intercom) **without breaking B&O coherence**:
 - Colour used for hierarchy or decoration; multiple competing accents.
 - Instant/abrupt state changes; animating layout properties; motion for its own sake.
 - Trend motifs (glassmorphism, neon gradients) that betray B&O timelessness.
-
-## Technology references (use newest, ignore the codebase's outdated pins)
-
-New UI work targets the **current stable major** of each tool, not the versions pinned in
-the repo today (an older Tauri v1 / Vue 3 line):
-
-- The **Tauri v2 line**, the **Vue 3 line** (Composition API, `<script setup>`), Pinia,
-  Vite, RxJS, TypeScript, and the current Rust edition. Verify exact versions against the
-  package registry rather than trusting any number written here.
-- See `beolyd5-tauri-app` for the v1→v2 migration and where each concern lives.

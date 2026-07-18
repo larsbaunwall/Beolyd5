@@ -12,12 +12,11 @@ license: Apache-2.0
 
 # beolyd5_controller crate development
 
-The Rust crate at [src/rust](../../../src/rust) is the crown jewel of this project: a
-working, published (`beolyd5_controller` on crates.io) HID abstraction for the BS5
-controller. Protect its correctness and API stability.
+The Rust crate at [src/rust](../../../src/rust) is a published (`beolyd5_controller` on
+crates.io) HID abstraction for the BS5 controller. Protect its correctness and API stability.
 
-**Prerequisite:** the wire protocol (VID/PID, byte layout, command bytes, wheel decoding)
-lives in the `beosound5-hardware` skill. Load that first for any protocol question.
+**Prerequisite:** wire protocol (VID/PID, byte layout, command bytes, wheel decoding) lives
+in `beosound5-hardware`. Load that first for any protocol question.
 
 ## Layout
 
@@ -48,11 +47,8 @@ clones the whole struct into an `Arc` and spawns a thread that blocks on
    and continue on recoverable errors, break on fatal ones. Propagate via a diagnostics
    callback rather than `unwrap`/`expect`.
 
-3. **`loop {}` busy-waits pin a CPU core at 100%.** Present in `src/ui/src-tauri/src/hw_controller.rs::init`
-   (the `tauri::async_runtime::spawn` block ends with a bare `loop {}`). Note: `examples/listen.rs`
-   does **not** do this — it uses `std::thread::sleep(Duration::from_millis(1))`, which is low-CPU
-   but still blocks the thread unnecessarily. **Fix the Tauri host** by blocking on a channel
-   `recv()` or `thread::park()`; the example is acceptable as-is.
+3. ~~**`loop {}` busy-wait.**~~ **Fixed** in `hw_controller.rs::init` — now uses
+   `std::future::pending::<()>().await`.
 
 4. **`Clone` resets `threads: Vec::new()` and deep-clones callback vectors every event.**
    `handle_device_event` clones the callback `Vec` on the hot path (allocations per
@@ -98,23 +94,20 @@ access to `0cd4:1112`.
   changes to existing callbacks are breaking — bump major and update `src/ui/src-tauri`
   which depends on it.
 - Keep `Button`, `Wheel`, and `SystemEvent` all `Serialize + Deserialize` — the Tauri
-  bridge serialises them across the JS boundary. (All three currently derive both.)
+  bridge serialises them across the JS boundary.
 
 ## Verify after a concurrency/refactor change
 
 - [ ] `tick()` fires within ~1 frame of a selection change (the Mutex-starvation regression).
-- [ ] Idle CPU stays low — no core pinned at 100% (the busy-loop regression).
+- [ ] Idle CPU stays low — no core pinned at 100%.
 - [ ] Unplug/replug the controller mid-run: the listener must not panic; surface an error/diagnostic instead.
 - [ ] Wheel deltas stay correct across the 256 wrap (spin slowly past 0 in both directions).
 - [ ] `src/ui/src-tauri` still builds against the crate (no unintended breaking API change).
 
 ## Gotchas
 
-- Do **not** change the VID/PID or byte offsets without cross-checking the
-  `beosound5-hardware` skill; they are physical facts, not preferences.
-- `serde_json` is in `Cargo.toml` as a dependency but is **not used anywhere** in
-  `src/rust/src/`. It is unused dead weight — safe to remove when touching the manifest.
-- Errors surface to users as "BS5 controller not found" — usually a missing udev rule or
-  the device not enumerated, not an actual code bug.
-- After any refactor, verify `tick()` still fires promptly on selection change (this is
-  the regression the Mutex bug causes).
+- Do **not** change the VID/PID or byte offsets without cross-checking
+  `beosound5-hardware`; they are physical facts, not preferences.
+- `serde_json` was a dead dependency; it has been removed. Do not re-add it unless used.
+- Errors surface as "BS5 controller not found" — usually a missing udev rule or the device
+  not enumerated, not a code bug.
