@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {ref, withDefaults} from 'vue';
 import arcs from '../utils/arcs';
 
 const props = withDefaults(defineProps<{
@@ -8,9 +7,8 @@ const props = withDefaults(defineProps<{
   radius: 1000,
 });
 
-
-const startArcAngle = ref(158);
-const endArcAngle = ref(202);
+const startArcAngle = 158;
+const endArcAngle = 202;
 
 function describeArc(startAngle: number, endAngle: number) {
   return arcs.describeArc(arcs.cx, arcs.cy, props.radius, startAngle, endAngle);

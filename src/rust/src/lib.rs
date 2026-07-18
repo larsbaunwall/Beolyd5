@@ -3,7 +3,6 @@
  * Use of this source code is governed by an Apache 2.0 license that can be found in the LICENSE file.
  */
 
-
 use hidapi::HidApi;
 use std::error::Error;
 use std::io::ErrorKind;
@@ -27,9 +26,12 @@ pub struct Beolyd5Controller {
     last_angular_wheel_pos: Arc<Mutex<u8>>,
     last_back_wheel_pos: Arc<Mutex<u8>>,
     is_running: Arc<AtomicBool>,
-    device_event_callbacks: Vec<Arc<Mutex<dyn Fn(SystemEvent) -> Result<(), Box<dyn Error + Send>> + Send>>>,
-    wheel_event_callbacks: Vec<Arc<Mutex<dyn Fn((Wheel, u8))-> Result<(), Box<dyn Error + Send>> + Send>>>,
-    button_event_callbacks: Vec<Arc<Mutex<dyn Fn(Button)-> Result<(), Box<dyn Error + Send>> + Send>>>,
+    device_event_callbacks:
+        Vec<Arc<Mutex<dyn Fn(SystemEvent) -> Result<(), Box<dyn Error + Send>> + Send>>>,
+    wheel_event_callbacks:
+        Vec<Arc<Mutex<dyn Fn((Wheel, u8)) -> Result<(), Box<dyn Error + Send>> + Send>>>,
+    button_event_callbacks:
+        Vec<Arc<Mutex<dyn Fn(Button) -> Result<(), Box<dyn Error + Send>> + Send>>>,
     device: Option<Arc<Mutex<hidapi::HidDevice>>>,
 }
 
@@ -62,7 +64,12 @@ impl Beolyd5Controller {
             let api = HidApi::new()?;
             let device = match api.open(self.vendor_id, self.product_id) {
                 Ok(device) => device,
-                Err(_) => return Err(Box::new(std::io::Error::new(std::io::ErrorKind::Other, "BS5 controller not found"))),
+                Err(_) => {
+                    return Err(Box::new(std::io::Error::new(
+                        std::io::ErrorKind::Other,
+                        "BS5 controller not found",
+                    )))
+                }
             };
             self.device = Some(Arc::new(Mutex::new(device)));
         }
@@ -115,7 +122,7 @@ impl Beolyd5Controller {
     //uint8_t bar [2] = { 0xc0, 0x00 }; // turns on LED
     //uint8_t bar [2] = { 0x80, 0x00 }; // turns off screen, on LED
     //uint8_t bar [2] = { 0xd0, 0x00 }; //  blinking
-    
+
     /// Sends a command to the device to turn on the LCD backlight or the LED.
     /// Commands _could_ be:
     /// - `[0x00, 0x00]` to turn off the LCD backlight and the LED
@@ -160,7 +167,10 @@ impl Beolyd5Controller {
     }
 
     /// Registers a callback to be called when a button event occurs.
-    pub fn register_button_event_callback(&mut self, callback: Arc<Mutex<dyn Fn(Button) -> Result<(), Box<dyn Error + Send>> + Send>>) {
+    pub fn register_button_event_callback(
+        &mut self,
+        callback: Arc<Mutex<dyn Fn(Button) -> Result<(), Box<dyn Error + Send>> + Send>>,
+    ) {
         self.button_event_callbacks.push(callback);
     }
 

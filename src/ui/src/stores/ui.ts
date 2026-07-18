@@ -2,8 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import {Subject} from "rxjs";
 import {HardwareEvent} from "../hardware/events.ts";
-
-//import { invoke } from "@tauri-apps/api";
+import { invoke, isTauri } from "@tauri-apps/api/core";
 
 export const useUIStore = defineStore('ui', () => {
   const volume = ref(50);
@@ -13,7 +12,11 @@ export const useUIStore = defineStore('ui', () => {
   const hardwareEvents = new Subject<HardwareEvent>();
 
   const tick = () => {
-    //invoke('tick');
+    if (!isTauri()) {
+      return;
+    }
+
+    invoke('tick').catch(() => {});
   }
 
   const nextHardwareEvent = (event: HardwareEvent) => {

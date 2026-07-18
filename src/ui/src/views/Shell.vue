@@ -1,28 +1,24 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
-import { onMounted, onUnmounted, computed } from 'vue';
+import { computed, watch } from 'vue';
 import BS5Shell from "./FullscreenContainer.vue";
+import type { Component } from 'vue';
 
-const props = defineProps({
-  component: {
-    type: Object,
-    default: () => BS5Shell,
-  },
-  shell: {
-    type: String,
-    default: 'default',
-  },
+interface Props {
+  component?: Component;
+  shell?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  component: () => BS5Shell as Component,
+  shell: 'default',
 });
 
 const isDefaultShell = computed(() => props.shell === 'default');
 
-onMounted(() => {
-  document.documentElement.style.overflow = isDefaultShell.value ? 'hidden' : 'auto';
-});
-
-onUnmounted(() => {
-  document.documentElement.style.overflow = 'auto';
-});
+// Update overflow whenever the shell type changes (component is reused by Vue Router).
+watch(isDefaultShell, (isDefault) => {
+  document.documentElement.style.overflow = isDefault ? 'hidden' : 'auto';
+}, { immediate: true });
 </script>
 
 <template>

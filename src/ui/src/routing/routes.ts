@@ -23,7 +23,11 @@ export const createRoutes = createRouter({
                     return { component: FullscreenContainer, shell: 'default' };
                 }
             },
-            redirect: route => `/${route.params.shell}/menu`,
+            redirect: route => {
+                const shell = route.params.shell as string | undefined;
+                const prefix = shell ? `/${shell}` : '';
+                return `${prefix}/menu`;
+            },
             children: [
                 {
                     path: "menu",

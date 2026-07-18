@@ -41,10 +41,8 @@ This is a very early version of the [new UI](src/ui):
 
 ### The hardware
 
-Currently, I am exploring how the rotary dial works over USB, trying to reverse engineer the protocol.
-
-Code for the Rotary controller (which is a USB HID device) can be found in 
-`src/dotnet` and `src/rust`. Alternatively, a linux kernel module that exports 
+The rotary controller protocol over USB has been reverse engineered and implemented in
+`src/rust` as the `beolyd5_controller` crate. Alternatively, a linux kernel module that exports 
 the HID events into "good" ones (joysting with axis, buttons, etc) is available 
 at 
 [beosound5-kernel-module](https://github.com/Frankkkkk/beosound5-kernel-module).
@@ -84,11 +82,7 @@ Hifiberry in itself will bring support for
 * Roon
 * Web radio stations
 
-~~I am exploring a .NET route (which is where I am most comfortable) and a Rust-based approach. The UI is probably going to be web-based on top of WebKitGTK.~~
-
-~~Currently, [Tauri](https://tauri.app/)/[WRY](https://github.com/tauri-apps/wry) (Rust-based) looks like good candidates for the UI platform. This will then bridge the BS5 controller with the web UI via a Javascript-bridge.~~
-
-**Update:** The application consist of two parts:
+The application consists of two parts:
 
 1. a [Rust-based HW abstraction](src/rust) that interfaces with the BS5 controller. This library understands the BS5 controller protocol over USB and is also available on [crates.io](https://crates.io/crates/beolyd5_controller)
 2. a [Tauri](https://tauri.app/)-based application that hosts a [VueJS-frontend](src/ui/src) using a platform-specific renderer (Webkit2GTK on Linux). This application mimicks the original interface found on the Beosund 5.

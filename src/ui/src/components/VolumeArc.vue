@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import {computed, ref} from 'vue';
+import {computed} from 'vue';
 import arcs from '../utils/arcs';
 import { useUIStore } from '../stores/ui';
 
 const uiStore = useUIStore();
 
-const radius = ref(270);
-const startArcAngle = ref(95);
-const endArcAngle = ref(265);
+const radius = 270;
+const startArcAngle = 95;
+const endArcAngle = 265;
 
-const translateVolume = computed(() => ((uiStore.volume - 0) * (endArcAngle.value - startArcAngle.value)) / (100 - 0) + startArcAngle.value);
+const translateVolume = computed(() => ((uiStore.volume - 0) * (endArcAngle - startArcAngle)) / (100 - 0) + startArcAngle);
 </script>
 
 <template>

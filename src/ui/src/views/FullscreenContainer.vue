@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import {computed, watch} from "vue";
 import {useUIStore} from "../stores/ui.ts";
 import {useRoute, useRouter} from "vue-router";
 
@@ -7,15 +7,18 @@ const uiStore = useUIStore();
 const router = useRouter();
 const route = useRoute();
 
+// Derived reactively so it stays correct if shell param ever changes on this component instance.
+const shellPrefix = computed(() => route.params.shell === 'sim' ? '/sim' : '');
+
 watch(() => uiStore.wheelPointerAngle, () => {
   if (uiStore.wheelPointerAngle > 203 && !uiStore.isNowPLayingOverlayActive) {
-    router.push(`/${route.params.shell}/playing`);
+    router.push(`${shellPrefix.value}/playing`);
     uiStore.isNowPLayingOverlayActive = true;
   } else if (uiStore.wheelPointerAngle < 155 && !uiStore.isNowPLayingOverlayActive) {
-    router.push(`/${route.params.shell}/playing`);
+    router.push(`${shellPrefix.value}/playing`);
     uiStore.isNowPLayingOverlayActive = true;
   } else if(uiStore.wheelPointerAngle > 155 && uiStore.wheelPointerAngle < 203 && uiStore.isNowPLayingOverlayActive) {
-    router.push(`/${route.params.shell}/menu`);
+    router.push(`${shellPrefix.value}/menu`);
     uiStore.isNowPLayingOverlayActive = false;
   }
 });
@@ -40,7 +43,6 @@ watch(() => uiStore.wheelPointerAngle, () => {
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 200ms;
-  background-color: red;
 }
 
 .fade-enter-from,

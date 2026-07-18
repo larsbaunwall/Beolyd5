@@ -1,34 +1,3 @@
-<template>
-  <div class="container">
-    <MainCircleArc :radius="radius"/>
-    <ArcContentFlow :radius=300>
-      <template v-slot:0>
-        <div>Test 1</div>
-      </template>
-      <template v-slot:1>
-        <div>Test 2</div>
-      </template>
-      <template v-slot:2>
-        <div>Test 3</div>
-      </template>
-    </ArcContentFlow>
-    <VolumeArc/>
-    <AnglePointer :radius="radius"/>
-    <div style="position: absolute; top: 20px; left: 180px; z-index: 1; width: 820px; height: 700px;">
-      <router-view v-slot="{ Component }">
-        <transition name="slide-up" mode="out-in">
-          <component :is="Component"/>
-        </transition>
-      </router-view>
-    </div>
-
-    <div v-for="(item, index) in menuItems" :key="index" class="list-item" :style="menuItemStyle(index)"
-         :class="{ selectedItem: isSelectedItem(index) }">
-      {{ item.title }}
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import {computed, CSSProperties, ref} from 'vue';
 import {useRoute, useRouter} from 'vue-router';
@@ -87,8 +56,38 @@ function isSelectedItem(index: number) {
   }
   return false;
 }
-
 </script>
+
+<template>
+  <div class="container">
+    <MainCircleArc :radius="radius"/>
+    <ArcContentFlow :radius=300>
+      <template v-slot:0>
+        <div>Test 1</div>
+      </template>
+      <template v-slot:1>
+        <div>Test 2</div>
+      </template>
+      <template v-slot:2>
+        <div>Test 3</div>
+      </template>
+    </ArcContentFlow>
+    <VolumeArc/>
+    <AnglePointer :radius="radius"/>
+    <div style="position: absolute; top: 20px; left: 180px; z-index: 1; width: 820px; height: 700px;">
+      <router-view v-slot="{ Component }">
+        <transition name="slide-up" mode="out-in">
+          <component :is="Component"/>
+        </transition>
+      </router-view>
+    </div>
+
+    <div v-for="(item, index) in menuItems" :key="index" class="list-item" :style="menuItemStyle(index)"
+         :class="{ selectedItem: isSelectedItem(index) }">
+      {{ item.title }}
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .container {

@@ -1,4 +1,4 @@
-import {bufferCount, filter, Subject} from "rxjs";
+import {bufferCount, filter} from "rxjs";
 import {listen} from "@tauri-apps/api/event";
 import arcs from "../utils/arcs.ts";
 import {useUIStore} from "../stores/ui.ts";
@@ -26,11 +26,12 @@ export interface HardwareEvent {
 
 export const startHardwareBridge = () => {
     const uiStore = useUIStore();
-    const diagnosticsSubject = new Subject<any>();
 
-    const unlisten = listen('hardwareEvent', (event: HardwareEvent) => {
+    // listen() returns a Promise<UnlistenFn>. We await it so any rejection is
+    // surfaced and the unlisten handle is available for cleanup if needed.
+    listen('hardwareEvent', (event: HardwareEvent) => {
         uiStore.nextHardwareEvent(event);
-    });
+    }).catch((err) => console.error('hardwareEvent listener failed:', err));
 
     const wheelEvents$ = uiStore.hardwareEvents.pipe(
         filter(event => event.payload.kind === 'wheel')
@@ -59,10 +60,9 @@ export const startHardwareBridge = () => {
             uiStore.wheelPointerAngle = arcs.translateToRange(event.payload.value, 0,120,152, 205);
         });
 
-    const diags = listen('diagnostics', (event) => {
-        diagnosticsSubject.next(event);
-        console.log({event});
-    });
+    listen('diagnostics', (event) => {
+        console.log('diagnostics:', event);
+    }).catch((err) => console.error('diagnostics listener failed:', err));
 }
 
 export function wheelSpinDifference(value: number): number {
